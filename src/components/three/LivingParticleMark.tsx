@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import Image from 'next/image';
@@ -37,6 +37,19 @@ void main() {
   gl_FragColor = vec4(color, alpha * (0.4 + vGlow * 0.6));
 }`;
 function rand(seed: number) { let n = seed | 0; n = (n ^ 61) ^ (n >>> 16); n = Math.imul(n, 9); n ^= n >>> 4; n = Math.imul(n, 0x27d4eb2d); n ^= n >>> 15; return (n >>> 0) / 4294967296; }
+
+function CameraScaler() {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    if (camera instanceof THREE.OrthographicCamera) {
+      // R3F owns an imperative Three.js camera; resizing requires updating its projection.
+      // eslint-disable-next-line react-hooks/immutability
+      camera.zoom = size.height / 5.8;
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, size.height]);
+  return null;
+}
 
 function ParticleCloud({ budget, progress, reduced, pointer, onReady }: { budget: number; progress: number; reduced: boolean; pointer: React.RefObject<THREE.Vector2>; onReady: () => void; }) {
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
@@ -110,6 +123,6 @@ export function LivingParticleMark({ progress = 0 }: { progress?: number }) {
   const move = useCallback((event: React.PointerEvent<HTMLDivElement>) => { const bounds = event.currentTarget.getBoundingClientRect(); pointer.current.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 6, (0.5 - (event.clientY - bounds.top) / bounds.height) * 6); }, []);
   return <div ref={host} className="mark-stage" aria-label="KNOuX particle mark" role="img" onPointerMove={move} onPointerLeave={() => pointer.current.set(100, 100)}>
     <Image src="/knoux-mark-mask.png" alt="" width={1254} height={1254} priority className={`mark-static ${ready && supported && !reduced ? 'is-hidden' : ''}`} />
-    {supported && !reduced && <Canvas className="mark-canvas" orthographic camera={{ position: [0, 0, 10], zoom: 105, near: 0.1, far: 100 }} dpr={tier === 'high' ? [1, 1.75] : [1, 1.25]} frameloop={visible ? 'always' : 'never'} gl={{ antialias: tier !== 'low', alpha: true, powerPreference: tier === 'low' ? 'low-power' : 'high-performance' }} ><ParticleCloud budget={budget} progress={progress} reduced={reduced} pointer={pointer} onReady={markReady} /></Canvas>}
+    {supported && !reduced && <Canvas className="mark-canvas" orthographic camera={{ position: [0, 0, 10], near: 0.1, far: 100 }} dpr={tier === 'high' ? [1, 1.75] : [1, 1.25]} frameloop={visible ? 'always' : 'never'} gl={{ antialias: tier !== 'low', alpha: true, powerPreference: tier === 'low' ? 'low-power' : 'high-performance' }}><CameraScaler /><ParticleCloud budget={budget} progress={progress} reduced={reduced} pointer={pointer} onReady={markReady} /></Canvas>}
   </div>;
 }
