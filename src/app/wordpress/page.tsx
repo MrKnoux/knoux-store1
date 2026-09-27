@@ -1,115 +1,161 @@
-import Link from 'next/link';
-import { pageMetadata } from '@/lib/metadata';
 import { PageIntro } from '@/components/PageIntro';
-import { WordPressRegistry } from '@/components/WordPressRegistry';
+import { SignalRail } from '@/components/DivisionShell';
+import { DivisionBridge, NextLink, RevealGroup } from '@/components/blocks';
+import { WordPressGoalIndex } from '@/components/WordPressCatalog';
+import { pageMetadata } from '@/lib/metadata';
+import { wordPressItems, wordpressPillars, wordPressServices } from '@/data/wordpress';
+import { TrackOnView } from '@/components/TrackOnView';
 
 export const metadata = pageMetadata(
-  'WordPress Division',
-  'Enterprise WordPress themes, core plugins, Gutenberg block suites, starter sites, and decoupled headless architectures engineered without bloat.',
-  '/wordpress'
+  'WordPress Ecosystem',
+  'KNOuX WordPress: systems for the open web. Themes, blocks, starter sites, extensions and bundles, plus the operating work that keeps an install correct.',
+  '/wordpress',
 );
 
 export default function WordPressPage() {
   return (
-    <main>
+    <main id="main-content">
+      <TrackOnView event={{ type: 'division_opened', division: 'wordpress', route: '/wordpress' }} />
       <PageIntro
         index="02"
         label="WordPress"
-        title="WordPress Engineering Ecosystem"
-        italic="Build, extend, operate, and scale without legacy CMS bloat."
-        description="We treat WordPress not as a fragile blog engine, but as an enterprise-grade content management API. Zero bloated page builders, zero jQuery runtime debt, 100/100 Core Web Vitals."
+        title="Systems for"
+        italic="the open web."
+        description="A KNOuX ecosystem, not a listing. This division is organised by what a WordPress build has to do: author it, extend it, operate it, or grow it."
       />
+      <SignalRail division="wordpress" path="/wordpress" />
 
-      {/* Philosophy & Pillars */}
-      <section className="section-shell wp-pillars-section">
-        <div className="section-header-split">
-          <div>
-            <p className="eyebrow">THE KNOuX STANDARD</p>
-            <h2>WordPress Re-Architected from Bare Metal</h2>
+      {/* Operating groups */}
+      <section className="shell" id="operate" style={{ paddingTop: 'clamp(60px, 7vw, 120px)', paddingBottom: 'clamp(80px, 9vw, 150px)', scrollMarginTop: 80 }}>
+        <RevealGroup>
+          <div className="block-head">
+            <div>
+              <span className="label label--signal">ECOSYSTEM</span>
+              <h2 className="block-head__title">
+                Four groups,
+                <br />
+                one install.
+              </h2>
+            </div>
+            <p className="block-head__aside">
+              Everything in a WordPress engagement belongs to one of these. A build that only addresses the first
+              group is unfinished.
+            </p>
           </div>
-          <p className="section-statement">
-            Over 40% of the web runs on WordPress, yet 95% of installations suffer from plugin bloat, unindexed MySQL queries, and sluggish response times. KNOuX re-engineers every layer—from block rendering to server-side telemetry.
+        </RevealGroup>
+        <div className="pillars" style={{ marginTop: 40 }}>
+          {wordpressPillars.map((pillar) => (
+            <div key={pillar.id} className="pillar" data-reveal>
+              <span className="pillar__index">{pillar.index}</span>
+              <h3>{pillar.label}</h3>
+              <p>{pillar.statement}</p>
+              <ul className="pillar__activities">
+                {pillar.activities.map((activity) => (
+                  <li key={activity}>{activity}</li>
+                ))}
+              </ul>
+              {pillar.categoryRoute ? (
+                <span className="pillar__link">SEE {pillar.label.toUpperCase()} CATALOGUE</span>
+              ) : (
+                <span className="pillar__link" style={{ color: '#6d6e70' }}>
+                  PERFORMED AS A SERVICE
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <WordPressGoalIndex />
+
+      {/* Catalogue surfaces */}
+      <section className="shell" id="catalogues" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
+        <div className="block-head">
+          <div>
+            <span className="label label--signal">REGISTRY STATE</span>
+            <h2 className="block-head__title">
+              The catalogue
+              <br />
+              is empty.
+            </h2>
+          </div>
+          <p className="block-head__aside">
+            Every WordPress route below exists with its filters, index and detail surface wired to a registry. No
+            KNOuX WordPress release has been published, so no item is listed.
           </p>
         </div>
 
-        <div className="wp-pillars-grid">
-          <div className="pillar-card">
-            <span className="pillar-num">01</span>
-            <h3>BUILD</h3>
-            <p className="pillar-sub">Engineered Themes & Starter Systems</p>
-            <p className="pillar-text">
-              Full Site Editing (FSE) themes built with deterministic font metrics and zero runtime JavaScript. Instant layout stability with zero cumulative layout shift.
-            </p>
-            <Link href="/wordpress/themes" className="pillar-link">EXPLORE THEMES <span>→</span></Link>
-          </div>
-
-          <div className="pillar-card">
-            <span className="pillar-num">02</span>
-            <h3>EXTEND</h3>
-            <p className="pillar-sub">Zero-Bloat Core Plugins & Blocks</p>
-            <p className="pillar-text">
-              Surgical plugins that optimize database query indexes, manage Redis object caches, and render responsive Gutenberg data matrices via pure SVG.
-            </p>
-            <Link href="/wordpress/plugins" className="pillar-link">EXPLORE PLUGINS <span>→</span></Link>
-          </div>
-
-          <div className="pillar-card">
-            <span className="pillar-num">03</span>
-            <h3>OPERATE</h3>
-            <p className="pillar-sub">Zero-Trust Hardening & Headless APIs</p>
-            <p className="pillar-text">
-              Decouple your WordPress editorial dashboard from edge-hosted Next.js frontends or harden your monolithic installation with cryptographic SHA-256 integrity auditing.
-            </p>
-            <Link href="/wordpress/solutions" className="pillar-link">VIEW SOLUTIONS <span>→</span></Link>
-          </div>
-
-          <div className="pillar-card">
-            <span className="pillar-num">04</span>
-            <h3>GROW</h3>
-            <p className="pillar-sub">Server-Side Telemetry & CAPI</p>
-            <p className="pillar-text">
-              Direct server-to-server dispatch for Meta Conversions API and Google GA4. Capture 100% of conversion data without browser cookie loss or ad-blocker suppression.
-            </p>
-            <Link href="/growth/meta-ads" className="pillar-link">GROWTH INTEGRATION <span>→</span></Link>
-          </div>
+        <div className="index-rows" style={{ marginTop: 40 }}>
+          {[
+            { code: 'WP-01', name: 'Themes', meta: 'Full site editing systems for editorial control.', href: '/wordpress/themes' },
+            { code: 'WP-02', name: 'Plugins', meta: 'Extensions that add a capability or an integration.', href: '/wordpress/plugins' },
+            { code: 'WP-03', name: 'Blocks', meta: 'Reusable Gutenberg components for technical layouts.', href: '/wordpress/blocks' },
+            { code: 'WP-04', name: 'Starter Sites', meta: 'Pre-architected foundations by business vertical.', href: '/wordpress/starter-sites' },
+            { code: 'WP-05', name: 'Bundles', meta: 'Software, extensions and operating work per outcome.', href: '/wordpress/solutions' },
+          ].map((entry) => (
+            <a key={entry.href} className="index-row" href={entry.href}>
+              <span className="index-row__index">{entry.code}</span>
+              <span className="index-row__name">{entry.name}</span>
+              <span className="index-row__meta">
+                <span>{entry.meta}</span>
+                <span className="mono">0 PUBLISHED</span>
+              </span>
+              <span className="index-row__arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          ))}
         </div>
       </section>
 
-      {/* Subroutes Quick Switcher */}
-      <section className="section-shell wp-subnav-section">
-        <div className="subnav-bar">
-          <span className="subnav-label">DIRECT REGISTRIES:</span>
-          <div className="subnav-links">
-            <Link href="/wordpress/themes">THEMES</Link>
-            <span className="sep">/</span>
-            <Link href="/wordpress/plugins">PLUGINS</Link>
-            <span className="sep">/</span>
-            <Link href="/wordpress/blocks">BLOCKS</Link>
-            <span className="sep">/</span>
-            <Link href="/wordpress/starter-sites">STARTER SITES</Link>
-            <span className="sep">/</span>
-            <Link href="/wordpress/solutions">SOLUTIONS</Link>
+      {/* Operating services */}
+      <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
+        <div className="block-head">
+          <div>
+            <span className="label label--signal">OPERATING WORK</span>
+            <h2 className="block-head__title">
+              What KNOuX
+              <br />
+              performs today.
+            </h2>
           </div>
+          <p className="block-head__aside">
+            These are engineering services rather than files, so they are available now. They carry no price and
+            no duration; scope is agreed in conversation.
+          </p>
+        </div>
+        <div className="index-rows" style={{ marginTop: 40 }}>
+          {wordPressServices.map((service) => (
+            <div key={service.id} className="index-row">
+              <span className="index-row__index">{service.code}</span>
+              <span className="index-row__name">{service.name}</span>
+              <span className="index-row__meta">
+                <span>{service.summary}</span>
+                <span className="mono">{service.activities.slice(0, 3).join(' / ')}</span>
+              </span>
+              <span className="index-row__arrow" aria-hidden="true">
+                ·
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Master Registry Component */}
-      <section className="wp-registry-anchor">
-        <WordPressRegistry initialCategory="all" />
-      </section>
-
-      {/* Outro Callout */}
-      <section className="page-outro section-shell">
-        <p className="eyebrow">CUSTOM WORDPRESS DEPLOYMENT</p>
-        <h2>Need a custom plugin, theme, or headless migration?</h2>
-        <div className="outro-actions">
-          <Link href="/contact?scope=wordpress" className="button-primary">
-            <span>SCHEDULE ARCHITECTURE REVIEW</span>
-            <span>↗</span>
-          </Link>
-          <Link href="/build" className="button-text">
-            LAUNCH SOLUTION COMPOSER <span>→</span>
-          </Link>
+      <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
+        <p className="meta-row" style={{ marginBottom: 30 }}>
+          <span>REGISTRY: {wordPressItems.length} RELEASES</span>
+          <span>SERVICES: {wordPressServices.length}</span>
+          <span>GOALS: 5</span>
+        </p>
+        <DivisionBridge
+          label="ACROSS DIVISIONS"
+          title="WordPress rarely stands alone."
+          body="An install usually sits inside a wider system: a storefront, a portal, a campaign. The Composer assembles those from the same registry this division publishes."
+          href="/build"
+          action="Open the Composer"
+        />
+        <div style={{ marginTop: 60 }}>
+          <NextLink label="Next division" name="Web engineering" href="/web" />
         </div>
       </section>
     </main>

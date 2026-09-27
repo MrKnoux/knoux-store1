@@ -2,24 +2,78 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
+import { root } from './helpers.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const port = 32219;
+const port = Number(process.env.KNOUX_TEST_PORT ?? 32219);
 const origin = `http://127.0.0.1:${port}`;
 const env = { ...process.env };
-if (process.env.KNOUX_TEST_NETWORK_SHIM) env.NODE_OPTIONS = `--require=${process.env.KNOUX_TEST_NETWORK_SHIM}`;
-const server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', '127.0.0.1'], { env, stdio: 'ignore' });
+if (process.env.KNOUX_TEST_NETWORK_SHIM) {
+  env.NODE_OPTIONS = `--require=${process.env.KNOUX_TEST_NETWORK_SHIM}`;
+}
+const server = spawn(
+  process.execPath,
+  ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', '127.0.0.1'],
+  { env, stdio: 'ignore' },
+);
 
 async function waitForServer() {
-  for (let attempt = 0; attempt < 70; attempt++) {
+  for (let attempt = 0; attempt < 140; attempt++) {
     if (server.exitCode !== null) throw new Error(`Server exited with ${server.exitCode}`);
-    try { const response = await fetch(origin); if (response.ok) return; } catch { /* awaiting startup */ }
+    try {
+      const response = await fetch(origin);
+      if (response.ok) return;
+    } catch {
+      /* awaiting startup */
+    }
     await new Promise((resolve) => setTimeout(resolve, 150));
   }
   throw new Error('Production server did not start');
 }
+
+const ROUTES = [
+  '/',
+  '/products',
+  '/products/knoux-one',
+  '/products/kforge',
+  '/products/knoux-repair',
+  '/products/knoux-smartorganizer',
+  '/products/knoux-rec',
+  '/products/knoux-x',
+  '/products/knoux-clipboard-ai',
+  '/products/knoux-crypt',
+  '/wordpress',
+  '/wordpress/themes',
+  '/wordpress/plugins',
+  '/wordpress/blocks',
+  '/wordpress/starter-sites',
+  '/wordpress/solutions',
+  '/web',
+  '/growth',
+  '/growth/google-ads',
+  '/growth/meta-ads',
+  '/growth/social',
+  '/growth/content',
+  '/growth/seo',
+  '/creative',
+  '/solutions',
+  '/solutions/start-a-business',
+  '/solutions/launch-a-new-product',
+  '/solutions/build-an-online-store',
+  '/solutions/digitise-operations',
+  '/solutions/create-a-customer-portal',
+  '/solutions/promote-a-local-business',
+  '/solutions/build-an-academy-platform',
+  '/solutions/modernise-an-existing-website',
+  '/build',
+  '/labs',
+  '/work',
+  '/engineering',
+  '/about',
+  '/contact',
+  '/sitemap.xml',
+  '/robots.txt',
+];
 
 test('the canonical mark geometry is the single source of truth', () => {
   const svg = readFileSync(join(root, 'knoux-mark-canonical.svg'), 'utf8');
@@ -27,7 +81,10 @@ test('the canonical mark geometry is the single source of truth', () => {
 
   const viewBox = svg.match(/viewBox="([^"]+)"/);
   assert.ok(viewBox, 'canonical mark must declare a viewBox');
-  assert.ok(markModule.includes(`'${viewBox[1]}'`) || markModule.includes(`${viewBox[1].split(' ')[2]}`), 'knouxMark.ts must carry the canonical viewBox');
+  assert.ok(
+    markModule.includes(`'${viewBox[1]}'`) || markModule.includes(`${viewBox[1].split(' ')[2]}`),
+    'knouxMark.ts must carry the canonical viewBox',
+  );
 
   const svgPaths = [...svg.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map((match) => match[1]);
   const modulePaths = [...markModule.matchAll(/\bd:\s*'([^']+)'/g)].map((match) => match[1]);
@@ -35,49 +92,36 @@ test('the canonical mark geometry is the single source of truth', () => {
   assert.deepEqual(modulePaths, svgPaths, 'knouxMark.ts has drifted from knoux-mark-canonical.svg');
 });
 
+test('the protected arrival baseline is intact', () => {
+  const css = readFileSync(join(root, 'src', 'app', 'globals.css'), 'utf8');
+  for (const selector of [
+    '.arrival-rail',
+    '.arrival-sticky',
+    '.arrival-copy',
+    '.arrival-copy.is-revealed',
+    '.mark-canvas',
+    '.mark-fallback',
+    '.starfield',
+    '.pulse-dot',
+  ]) {
+    assert.ok(css.includes(selector), `the arrival baseline requires ${selector}`);
+  }
+  assert.match(css, /prefers-reduced-motion/, 'reduced motion must be honoured');
+});
+
 test('production routes, deep links, sitemap and honest contact delivery', async (t) => {
   await waitForServer();
   t.after(() => server.kill());
-  const paths = [
-    '/',
-    '/products',
-    '/products/knoux-one',
-    '/products/kforge',
-    '/products/knoux-repair',
-    '/products/smart-organizer',
-    '/products/knoux-rec',
-    '/products/knoux-x',
-    '/products/knoux-clipboard-ai',
-    '/products/knoux-crypt',
-    '/wordpress',
-    '/wordpress/themes',
-    '/wordpress/plugins',
-    '/wordpress/blocks',
-    '/wordpress/starter-sites',
-    '/wordpress/solutions',
-    '/web',
-    '/growth',
-    '/growth/meta-ads',
-    '/growth/google-ads',
-    '/growth/social',
-    '/growth/content',
-    '/growth/seo',
-    '/creative',
-    '/solutions',
-    '/build',
-    '/engineering',
-    '/labs',
-    '/work',
-    '/about',
-    '/contact',
-    '/sitemap.xml',
-    '/robots.txt',
-  ];
-  for (const path of paths) {
+
+  for (const path of ROUTES) {
     const response = await fetch(origin + path);
     assert.equal(response.status, 200, `GET ${path}`);
   }
-  assert.equal((await fetch(origin + '/missing')).status, 404);
+
+  assert.equal((await fetch(origin + '/missing-page')).status, 404, 'unknown routes return 404');
+  assert.equal((await fetch(origin + '/products/not-a-product')).status, 404, 'unknown product slugs return 404');
+  assert.equal((await fetch(origin + '/growth/not-a-channel')).status, 404, 'unknown growth slugs return 404');
+  assert.equal((await fetch(origin + '/solutions/not-a-solution')).status, 404, 'unknown solution slugs return 404');
 
   // Every stylesheet and script the homepage references must actually resolve,
   // otherwise the page renders as unstyled markup.
@@ -95,25 +139,128 @@ test('production routes, deep links, sitemap and honest contact delivery', async
   assert.match(home, /ENGINEERING DIGITAL SYSTEMS/);
   assert.match(home, /application\/ld\+json/);
   assert.match(home, /rel="canonical"/);
-  assert.match(home, /KNOuX ONE/);
-  assert.match(home, /KNOuX Forge/);
-  assert.match(home, /KNOuX Repair/);
-  assert.match(home, /KNOuX SmartOrganizer/);
+
+  // Divisions must be discoverable from the homepage in crawlable markup.
+  for (const division of ['Software', 'WordPress', 'Web', 'Growth', 'Creative', 'Solutions']) {
+    assert.ok(home.includes(division), `homepage must expose the ${division} division in the DOM`);
+  }
+  for (const product of ['KNOUX ONE', 'KNOuX Forge', 'KNOuX Repair', 'KNOuX SmartOrganizer', 'KNOuX REC']) {
+    assert.ok(home.includes(product), `homepage must list ${product}`);
+  }
+
+  // Command interface affordance must be reachable without a pointer.
+  assert.match(home, /aria-label="Open search"/, 'a labelled search control must exist in the header');
+});
+
+test('division pages render their registry honestly', async (t) => {
+  await waitForServer();
+  t.after(() => server.kill());
+
+  const themes = await (await fetch(origin + '/wordpress/themes')).text();
+  assert.match(themes, /IN DEVELOPMENT/, 'an empty catalogue must state its state');
+  assert.match(themes, /0 themes published/i, 'the themes surface must report its count');
+  assert.ok(!/demo\.knoux\./.test(themes), 'no demo URL may be invented for an unreleased theme');
+
+  const plugins = await (await fetch(origin + '/wordpress/plugins')).text();
+  assert.match(plugins, /0 plugins registered/i, 'the extension registry must report its count');
+  assert.ok(!/\$[0-9]/.test(plugins), 'no price may be shown for an unreleased plugin');
+
+  const growth = await (await fetch(origin + '/growth')).text();
+  assert.match(growth, /CAMPAIGN BUDGET/i, 'the growth entry must accept a campaign budget');
+  assert.ok(!/ROAS|CPC|CPA|conversion rate of/i.test(growth), 'growth must not project a result');
+
+  const web = await (await fetch(origin + '/web')).text();
+  assert.match(web, /CAPABILITY MATRIX/i, 'web must publish the capability matrix');
+  assert.ok(!/\$\d/.test(web), 'web must not publish prices');
+
+  const work = await (await fetch(origin + '/work')).text();
+  assert.match(work, /EMPTY BY EVIDENCE/i, 'the work archive must state that it is empty');
+  assert.ok(!/testimonial/i.test(work), 'no testimonials may be shown');
+
+  const creative = await (await fetch(origin + '/creative')).text();
+  assert.match(creative, /No project archive is published/i, 'creative must not imply a portfolio');
+});
+
+test('searchable routes expose metadata and structured data', async (t) => {
+  await waitForServer();
+  t.after(() => server.kill());
+
+  for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/about', '/contact', '/products/knoux-one']) {
+    const html = await (await fetch(origin + path)).text();
+    assert.match(html, /rel="canonical"/, `${path} must declare a canonical URL`);
+    assert.match(html, /<title>[^<]{10,}<\/title>/, `${path} must have a meaningful title`);
+    assert.match(html, /name="description"/, `${path} must have a meta description`);
+    assert.match(html, /property="og:title"/, `${path} must be Open Graph ready`);
+    assert.ok(!/<h1[^>]*>\s*<\/h1>/.test(html), `${path} must have exactly one non-empty h1`);
+  }
+});
+
+test('sitemap and robots describe the real site', async (t) => {
+  await waitForServer();
+  t.after(() => server.kill());
 
   const robots = await (await fetch(origin + '/robots.txt')).text();
   assert.match(robots, /Sitemap:/);
+
   const sitemap = await (await fetch(origin + '/sitemap.xml')).text();
-  for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/engineering', '/labs', '/work', '/about', '/contact']) {
-    assert.ok(sitemap.includes(`https://knoux.store${path}`), `sitemap must list ${path}`);
+  for (const path of [
+    '/',
+    '/products',
+    '/wordpress',
+    '/wordpress/themes',
+    '/web',
+    '/growth',
+    '/creative',
+    '/solutions',
+    '/build',
+    '/labs',
+    '/work',
+    '/about',
+    '/contact',
+  ]) {
+    assert.ok(sitemap.includes(`https://knoux.store${path}<`), `sitemap must list ${path}`);
   }
+  for (const product of ['knoux-one', 'kforge', 'knoux-repair', 'knoux-x', 'knoux-clipboard-ai']) {
+    assert.ok(sitemap.includes(`/products/${product}<`), `sitemap must list /products/${product}`);
+  }
+  for (const slug of ['google-ads', 'meta-ads', 'social', 'content', 'seo']) {
+    assert.ok(sitemap.includes(`/growth/${slug}<`), `sitemap must list /growth/${slug}`);
+  }
+});
+
+test('the contact endpoint never claims delivery without a configured service', async (t) => {
+  await waitForServer();
+  t.after(() => server.kill());
 
   assert.equal((await fetch(origin + '/api/contact', { method: 'GET' })).status, 405, 'contact endpoint rejects other methods');
-  const malformed = await fetch(origin + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: 'not-json' });
+
+  const malformed = await fetch(origin + '/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: 'not-json',
+  });
   assert.equal(malformed.status, 400, 'contact endpoint rejects malformed bodies');
-  const invalid = await fetch(origin + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'A', email: 'bad', message: 'x' }) });
-  assert.equal(invalid.status, 422);
+
+  const invalid = await fetch(origin + '/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'A', email: 'bad', message: 'x' }),
+  });
+  assert.equal(invalid.status, 422, 'contact endpoint validates fields');
+
   if (!process.env.CONTACT_WEBHOOK_URL) {
-    const valid = await fetch(origin + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Test User', email: 'test@example.com', message: 'A valid request for a new project.' }) });
+    const valid = await fetch(origin + '/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        message: 'A valid request for a new project.',
+        requestType: 'web',
+      }),
+    });
     assert.equal(valid.status, 503, 'must never claim delivery without a configured service');
+    const body = await valid.json();
+    assert.equal(body.delivered, false, 'an unconfigured delivery must say so');
   }
 });
