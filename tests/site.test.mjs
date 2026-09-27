@@ -49,6 +49,22 @@ test('production routes, deep links, sitemap and honest contact delivery', async
     '/products/knoux-x',
     '/products/knoux-clipboard-ai',
     '/products/knoux-crypt',
+    '/wordpress',
+    '/wordpress/themes',
+    '/wordpress/plugins',
+    '/wordpress/blocks',
+    '/wordpress/starter-sites',
+    '/wordpress/solutions',
+    '/web',
+    '/growth',
+    '/growth/meta-ads',
+    '/growth/google-ads',
+    '/growth/social',
+    '/growth/content',
+    '/growth/seo',
+    '/creative',
+    '/solutions',
+    '/build',
     '/engineering',
     '/labs',
     '/work',
@@ -87,7 +103,7 @@ test('production routes, deep links, sitemap and honest contact delivery', async
   const robots = await (await fetch(origin + '/robots.txt')).text();
   assert.match(robots, /Sitemap:/);
   const sitemap = await (await fetch(origin + '/sitemap.xml')).text();
-  for (const path of ['/', '/products', '/engineering', '/labs', '/work', '/about', '/contact']) {
+  for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/engineering', '/labs', '/work', '/about', '/contact']) {
     assert.ok(sitemap.includes(`https://knoux.store${path}`), `sitemap must list ${path}`);
   }
 
