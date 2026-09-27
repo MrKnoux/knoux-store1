@@ -1,8 +1,23 @@
 node_modules/
 .next/
+.next-*/
 out/
 .vercel/
 *.tsbuildinfo
 .env*
 !.env.example
 npm-debug.log*
+.lint-report.json
+
+# Local visual QA artefacts: browser profiles and screenshots from ad-hoc checks.
+# Never commit these; they are reproducible from the production server.
+.qa-chrome-*/
+.qa-*/
+qa-*.png
+*.png
+scripts/
+*.py
+KNOuX_VISUAL_REFERENCES_MASTER.txt
+KNOuX_WORK_EXECUTION_PROMPT.txt
+New Text Document.txt
+public/knoux-particles.bin

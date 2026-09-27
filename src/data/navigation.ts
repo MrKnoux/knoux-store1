@@ -1,3 +1,5 @@
+import { products } from '@/data/products';
+
 export const navigation = [
   { label: 'Products', href: '/products' },
   { label: 'Labs', href: '/labs' },
@@ -10,8 +12,9 @@ export const navigation = [
 export const searchable = [
   { label: 'Home', description: 'KNOuX Digital Headquarters', href: '/' },
   ...navigation.map((item) => ({ label: item.label, description: 'Explore KNOuX', href: item.href })),
-  { label: 'KNOuX ONE', description: 'Product', href: '/products/knoux-one' },
-  { label: 'KNOuX Forge', description: 'Product', href: '/products/kforge' },
-  { label: 'KNOuX Repair', description: 'Product', href: '/products/knoux-repair' },
-  { label: 'KNOuX SmartOrganizer', description: 'Product', href: '/products/smart-organizer' },
-] as const;
+  ...products.map((product) => ({
+    label: product.name,
+    description: `${product.discipline.toUpperCase()} • ${product.tagline} • ${product.keywords.slice(0, 5).join(' ')}`,
+    href: `/products/${product.slug}`,
+  })),
+];
