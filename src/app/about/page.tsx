@@ -1,0 +1,6 @@
+import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
+import { pageMetadata } from '@/lib/metadata';
+
+export const metadata = pageMetadata('About', 'KNOuX is an engineering institution building digital products and systems.', '/about');
+export default function About() { return <main id="main-content"><PageIntro index="05" label="About" title="A practice of" italic="building forward." description="KNOuX is a digital institution focused on software products and systems." /><section className="about-statement section-shell"><p className="eyebrow">OUR POINT OF VIEW</p><h2>Make the complex<br /><em>feel considered.</em></h2><div><p>We believe the quality of a digital product is found in the decisions that hold it together: its interface, behavior, structure and path to delivery.</p><p>This site is a living record of KNOuX products and engineering practice. Specific claims will be added only when they can be documented.</p></div></section><section className="text-band section-shell"><span className="eyebrow">CONTINUE THE CONVERSATION</span><p>Have something<br /><em>to build?</em></p><Link className="text-link" href="/contact">CONTACT KNOuX ↗</Link></section></main>; }

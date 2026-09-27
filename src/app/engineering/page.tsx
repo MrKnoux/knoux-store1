@@ -1,0 +1,7 @@
+import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
+import { pageMetadata } from '@/lib/metadata';
+
+export const metadata = pageMetadata('Engineering', 'How KNOuX thinks about interfaces, runtime and delivery.', '/engineering');
+const stages = [{ n: '01', title: 'Interface', body: 'How someone understands and uses a system.' }, { n: '02', title: 'Runtime', body: 'How it responds, remains stable and handles change.' }, { n: '03', title: 'Data', body: 'How information is modeled and protected.' }, { n: '04', title: 'Delivery', body: 'How the system is tested, released and maintained.' }];
+export default function Engineering() { return <main id="main-content"><PageIntro index="02" label="Engineering" title="Systems are" italic="relationships." description="An interface is only one part of the work. The real experience depends on what connects beneath it." /><section className="engineering-map section-shell"><div><p className="eyebrow">A CONTINUOUS PRACTICE</p><h2>From the point<br />of contact to<br /><em>what powers it.</em></h2></div><div className="engineering-steps">{stages.map((s) => <div className="engineering-step" key={s.n}><span>{s.n}</span><h3>{s.title}</h3><p>{s.body}</p></div>)}</div></section><section className="text-band section-shell"><span className="eyebrow">KNOuX / ENGINEERING</span><p>Clarity at the surface.<br /><em>Discipline underneath.</em></p><Link href="/products" className="text-link">EXPLORE PRODUCTS ↗</Link></section></main>; }
