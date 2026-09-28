@@ -18,6 +18,7 @@ export function SiteHeader() {
   const [menu, setMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const authRoute = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/forgot-password');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -65,13 +66,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
-          <Link
-            className="header-access"
-            href="/login"
-            aria-current={pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/forgot-password') ? 'page' : undefined}
-          >
-            ACCESS
-          </Link>
+          {authRoute ? (
+            <Link className="header-access header-home" href="/" aria-label="Return to KNOuX home">
+              <svg className="header-home__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3.5 10.7 12 3.8l8.5 6.9v9.1h-5.7v-5.7H9.2v5.7H3.5z" />
+              </svg>
+              <span>HOME</span>
+            </Link>
+          ) : (
+            <Link className="header-access" href="/login">
+              ACCESS
+            </Link>
+          )}
           <button
             className="header-search"
             type="button"
@@ -124,9 +130,9 @@ export function SiteHeader() {
             Open the Composer
             <span aria-hidden="true">↗</span>
           </Link>
-          <Link href="/login" className="mobile-panel__access" onClick={() => setMenu(false)}>
-            <span>13</span>
-            Access your account
+          <Link href={authRoute ? '/' : '/login'} className="mobile-panel__access" onClick={() => setMenu(false)}>
+            <span>{authRoute ? '00' : '13'}</span>
+            {authRoute ? 'Return to KNOuX home' : 'Access your account'}
             <span aria-hidden="true">↗</span>
           </Link>
         </nav>

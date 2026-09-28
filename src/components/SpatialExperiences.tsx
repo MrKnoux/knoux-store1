@@ -7,6 +7,7 @@ import { solutions } from '@/data/solutions';
 import { divisions } from '@/lib/entities';
 import { growthChannelsDetail } from '@/data/growth';
 import { creativeDisciplines, webSystems } from '@/data/services';
+import { DeterministicSignature } from '@/components/DeterministicSignature';
 import { wordPressItems } from '@/data/wordpress';
 import { labExperiments } from '@/data/software';
 
@@ -39,6 +40,15 @@ export function ArchitecturalMap() {
   </div>;
 }
 
+/**
+ * A featured archive: one verified system at a time, advanced by controls.
+ *
+ * This stays on `/products`, where it is a secondary way through the registry.
+ * The homepage's second block is not this. A carousel shows no relationship
+ * between systems and no depth, so that block is now the constellation in
+ * `UniverseConstellation`; this remains the linear reading of the same audited
+ * data.
+ */
 export function ProjectRail() {
   const [index, setIndex] = useState(0);
   const startX = useRef(0);
@@ -102,7 +112,7 @@ export function SignalField() {
 export function MaterialLab() {
   const [active, setActive] = useState(0);
   const discipline = creativeDisciplines[active];
-  return <div className="material-lab spatial-surface" data-spatial><div className="material-lab__layers" aria-hidden="true"><span className="material-lab__layer material-lab__layer--a" /><span className="material-lab__layer material-lab__layer--b" /><span className="material-lab__layer material-lab__layer--c" /><span className="material-lab__cross">K / MATERIAL STUDY</span></div><div className="material-lab__index" role="group" aria-label="Creative disciplines">{creativeDisciplines.map((entry, index) => <button key={entry.id} type="button" className={active === index ? 'is-active' : ''} onClick={() => setActive(index)} onFocus={() => setActive(index)} onMouseEnter={() => setActive(index)} aria-pressed={active === index}><small>{String(index + 1).padStart(2, '0')}</small>{entry.title}</button>)}</div><div className="material-lab__focus"><span className="label label--signal">MATERIAL {String(active + 1).padStart(2, '0')} / {discipline.code}</span><h3>{discipline.title}</h3><p>{discipline.statement}</p><span className="mono">DELIVERABLES / {discipline.deliverables.slice(0, 3).join(' · ')}</span><Link href={`#${discipline.slug}`} className="action">READ SPECIFICATION <span className="action-arrow">↓</span></Link></div></div>;
+  return <div className="material-lab spatial-surface" data-spatial data-scene={discipline.slug}><div className="material-lab__layers" aria-hidden="true"><span className="material-lab__layer material-lab__layer--a" /><span className="material-lab__layer material-lab__layer--b" /><span className="material-lab__layer material-lab__layer--c" /><span className="material-lab__cross">K / MATERIAL STUDY</span><DeterministicSignature seed={active + 91} label={discipline.code} compact /></div><div className="material-lab__index" role="group" aria-label="Creative disciplines">{creativeDisciplines.map((entry, index) => <button key={entry.id} type="button" className={active === index ? 'is-active' : ''} onClick={() => setActive(index)} onFocus={() => setActive(index)} onMouseEnter={() => setActive(index)} aria-pressed={active === index}><small>{String(index + 1).padStart(2, '0')}</small>{entry.title}</button>)}</div><div className="material-lab__focus"><span className="label label--signal">MATERIAL {String(active + 1).padStart(2, '0')} / {discipline.code}</span><h3>{discipline.title}</h3><p>{discipline.statement}</p><span className="mono">DELIVERABLES / {discipline.deliverables.slice(0, 3).join(' · ')}</span><Link href={`#${discipline.slug}`} className="action">READ SPECIFICATION <span className="action-arrow">↓</span></Link></div></div>;
 }
 
 export function ExperimentChamber() {

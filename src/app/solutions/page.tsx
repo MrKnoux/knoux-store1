@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
 import { SignalRail } from '@/components/DivisionShell';
-import { DivisionBridge, NextLink, RevealGroup, SystemIndex, IndexRow } from '@/components/blocks';
+import { DivisionBridge, NextLink } from '@/components/blocks';
 import { pageMetadata } from '@/lib/metadata';
-import { solutionGroups, solutions } from '@/data/solutions';
 import { TrackOnView } from '@/components/TrackOnView';
 import { MissionPath } from '@/components/SpatialExperiences';
+import { SolutionMissionRows } from '@/components/SpecialistArchives';
 
 export const metadata = pageMetadata(
   'Solutions',
@@ -25,38 +25,23 @@ export default function SolutionsPage() {
         description="You should not have to know which internal department serves you. Every solution below is assembled from the same registries the divisions publish."
       />
       <SignalRail division="solutions" path="/solutions" />
-
-      <section className="shell" style={{ paddingTop: 'clamp(70px, 8vw, 130px)', paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
-        <div className="block-head"><div><span className="label label--signal">MISSION NAVIGATION</span><h2 className="block-head__title">Follow the need.</h2></div><p className="block-head__aside">Move through real business objectives. Each station resolves into documented systems and services.</p></div>
+      <section
+        className="shell"
+        style={{ paddingTop: 'clamp(70px, 8vw, 130px)', paddingBottom: 'clamp(70px, 8vw, 130px)' }}
+      >
+        <div className="block-head">
+          <div>
+            <span className="label label--signal">MISSION NAVIGATION</span>
+            <h2 className="block-head__title">Follow the need.</h2>
+          </div>
+          <p className="block-head__aside">
+            Move through real business objectives. Each station resolves into documented systems and services.
+          </p>
+        </div>
         <MissionPath />
       </section>
 
-      <details className="evidence-disclosure shell"><summary>VIEW SOLUTION INDEX</summary>{solutionGroups.map((group) => {
-        const items = solutions.filter((solution) => solution.group === group.id);
-        if (items.length === 0) return null;
-        return (
-          <RevealGroup key={group.id}>
-            <SystemIndex
-              eyebrow={group.label.toUpperCase()}
-              title={group.statement.split('.')[0] + '.'}
-              statement={group.statement}
-            >
-              <div className="index-rows">
-                {items.map((solution) => (
-                  <IndexRow
-                    key={solution.id}
-                    index={solution.index}
-                    name={solution.title}
-                    meta={solution.objective}
-                    metaSecondary={`${solution.core.length} CORE LAYERS / ${solution.optional.length} OPTIONAL`}
-                    href={`/solutions/${solution.slug}`}
-                  />
-                ))}
-              </div>
-            </SystemIndex>
-          </RevealGroup>
-        );
-      })}</details>
+      <SolutionMissionRows />
 
       <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <div className="dev-state" data-reveal>
@@ -73,9 +58,7 @@ export default function SolutionsPage() {
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 26 }}>
             <Link href="/build" className="action action--primary">
               Open the Composer
-              <span className="action-arrow" aria-hidden="true">
-                ↗
-              </span>
+              <span className="action-arrow" aria-hidden="true">↗</span>
             </Link>
             <Link href="/contact?requestType=solution" className="action">
               Describe your situation

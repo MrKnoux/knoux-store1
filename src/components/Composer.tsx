@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -10,6 +11,8 @@ import {
 } from '@/data/composer-rules';
 import { divisionLabel, divisionRoute, type DivisionId, type DiscoverableEntity } from '@/lib/entities';
 import { track } from '@/lib/analytics';
+import { deriveOrbModel } from '@/components/build/orb-layout';
+import type { ComposerOrbNode } from '@/components/build/orb-types';
 
 /**
  * KNOuX Composer.
@@ -25,6 +28,14 @@ type Selected = { entity: DiscoverableEntity; reason: string };
 
 const DIVISION_ORDER: DivisionId[] = ['solutions', 'software', 'wordpress', 'web', 'growth', 'creative'];
 
+const BuildComposerOrbCanvas = dynamic(
+  () => import('@/components/build/BuildComposerOrb').then((module) => module.BuildComposerOrbCanvas),
+  {
+    ssr: false,
+    loading: () => <div className="build-composer-orb__loading" aria-hidden="true" />,
+  },
+);
+
 export function Composer() {
   const router = useRouter();
   const params = useSearchParams();
@@ -35,14 +46,27 @@ export function Composer() {
   const [removed, setRemoved] = useState<string[]>([]);
   const [extra, setExtra] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [selectedOrbId, setSelectedOrbId] = useState<string | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const started = useRef(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setReducedMotion(media.matches);
+    sync();
+    media.addEventListener?.('change', sync);
+    return () => media.removeEventListener?.('change', sync);
+  }, []);
 
   useEffect(() => {
     if (presetParam && !started.current) {
       started.current = true;
       setInput(presetParam);
       setEvaluated(presetParam);
+      setRemoved([]);
+      setExtra([]);
+      setSelectedOrbId(null);
       track({ type: 'composer_started', preset: presetParam.slice(0, 40) });
     }
   }, [presetParam]);
@@ -80,8 +104,29 @@ export function Composer() {
     }));
   }, [result, removed, extra]);
 
+  const typing = input.trim().length > 0 && input !== (evaluated ?? '');
+  const orbModel = useMemo(
+    () => deriveOrbModel(stack, selectedOrbId, evaluated, typing),
+    [stack, selectedOrbId, evaluated, typing],
+  );
+  const selectedOrbNode = useMemo(
+    () => [orbModel.nucleus, ...orbModel.divisions, ...orbModel.entities].find((node) => node.id === selectedOrbId) ?? null,
+    [orbModel, selectedOrbId],
+  );
+
+  const selectOrbNode = useCallback((node: ComposerOrbNode | null) => {
+    setSelectedOrbId(node?.id ?? null);
+  }, []);
+
+  const activateOrbNode = useCallback((node: ComposerOrbNode) => {
+    setSelectedOrbId(node.id);
+  }, []);
+
   const run = useCallback(() => {
     setEvaluated(input);
+    setRemoved([]);
+    setExtra([]);
+    setSelectedOrbId(null);
     if (!started.current) {
       started.current = true;
       track({ type: 'composer_started' });
@@ -93,17 +138,21 @@ export function Composer() {
     setEvaluated(null);
     setRemoved([]);
     setExtra([]);
+    setSelectedOrbId(null);
     textareaRef.current?.focus();
   }, []);
 
   const add = useCallback((entity: DiscoverableEntity) => {
+    setRemoved((current) => current.filter((id) => id !== entity.id));
     setExtra((current) => (current.includes(entity.id) ? current : [...current, entity.id]));
+    setSelectedOrbId(entity.id);
     track({ type: 'composer_item_added', id: entity.id, division: entity.division });
   }, []);
 
   const drop = useCallback((entity: DiscoverableEntity) => {
     setExtra((current) => current.filter((id) => id !== entity.id));
     setRemoved((current) => (current.includes(entity.id) ? current : [...current, entity.id]));
+    setSelectedOrbId((current) => (current === entity.id ? null : current));
     track({ type: 'composer_item_removed', id: entity.id, division: entity.division });
   }, []);
 
@@ -143,6 +192,7 @@ export function Composer() {
                   setEvaluated(preset.prompt);
                   setRemoved([]);
                   setExtra([]);
+                  setSelectedOrbId(null);
                   track({ type: 'composer_started', preset: preset.id });
                 }}
               >
@@ -170,6 +220,54 @@ export function Composer() {
         </p>
       </div>
 
+      <section className="composer-intelligence" aria-labelledby="composer-intelligence-title">
+        <div className="composer-intelligence__head">
+          <div>
+            <span className="composer-intelligence__eyebrow">BUILD INTELLIGENCE / LIVE TOPOLOGY</span>
+            <h2 id="composer-intelligence-title">KNOuX / Composer</h2>
+          </div>
+          <span className="composer-intelligence__state">
+            {orbModel.resolved
+              ? `${orbModel.divisions.length} DIV / ${orbModel.entities.length} ENT`
+              : 'IDLE / AWAITING INPUT'}
+          </span>
+        </div>
+
+        <BuildComposerOrbCanvas
+          model={orbModel}
+          onSelect={selectOrbNode}
+          onActivate={activateOrbNode}
+          reducedMotion={reducedMotion}
+        />
+
+        <div className="composer-intelligence__detail" aria-live="polite">
+          {selectedOrbNode ? (
+            <>
+              <div>
+                <span>{selectedOrbNode.code} / {selectedOrbNode.kind.toUpperCase()}</span>
+                <strong>{selectedOrbNode.label}</strong>
+              </div>
+              <p>{selectedOrbNode.summary}</p>
+              {selectedOrbNode.reason ? <p className="mono">MATCH: {selectedOrbNode.reason}</p> : null}
+              {selectedOrbNode.route ? (
+                <a className="action action--ghost" href={selectedOrbNode.route}>
+                  Open verified route <span className="action-arrow" aria-hidden="true">↗</span>
+                </a>
+              ) : null}
+              <button type="button" className="icon-button" onClick={() => setSelectedOrbId(null)}>
+                CLEAR SELECTION
+              </button>
+            </>
+          ) : (
+            <p>
+              {orbModel.resolved
+                ? 'Select a real division or entity in the spatial model or semantic index to inspect it.'
+                : 'The nucleus stays quiet until the deterministic Composer resolves a real registry-backed stack.'}
+            </p>
+          )}
+        </div>
+      </section>
+
       {result === null ? (
         <div className="composer-empty" style={{ border: '1px solid var(--line)', borderTop: 0, background: '#0b0c0e' }}>
           <h2>Your KNOuX stack.</h2>
@@ -184,7 +282,7 @@ export function Composer() {
             ))}
           </ul>
         </div>
-      ) : result.empty ? (
+      ) : result.empty && total === 0 ? (
         <div className="composer-empty" style={{ border: '1px solid var(--line)', borderTop: 0, background: '#0b0c0e' }}>
           <h2>Nothing matched that description.</h2>
           <p>

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { findSoftwareProduct, softwareProducts } from '@/data/software';
-import { ProductDossier } from '@/components/ProductDossier';
-import { TrackOnView } from '@/components/TrackOnView';
+import { ProductExperience } from '@/components/products/ProductExperience';
 import { pageMetadata } from '@/lib/metadata';
 
 export function generateStaticParams() {
@@ -37,9 +36,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return (
-    <main id="main-content">
-      <TrackOnView event={{ type: 'product_opened', id: product.id, slug: product.slug }} />
-      <ProductDossier product={product} previous={previous} next={next} related={related} />
-    </main>
+    <ProductExperience product={product} previous={previous} next={next} related={related} />
   );
 }

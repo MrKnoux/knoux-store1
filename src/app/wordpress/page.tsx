@@ -1,19 +1,25 @@
+import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
 import { SignalRail } from '@/components/DivisionShell';
 import { DivisionBridge, NextLink, RevealGroup } from '@/components/blocks';
+import { ExternalItemCard } from '@/components/wordpress/ExternalItemCard';
 import { WordPressGoalIndex } from '@/components/WordPressCatalog';
 import { pageMetadata } from '@/lib/metadata';
 import { wordPressItems, wordpressPillars, wordPressServices } from '@/data/wordpress';
+import { featuredPlugins, featuredThemes } from '@/lib/wordpress/wordpress-org';
 import { TrackOnView } from '@/components/TrackOnView';
 import { EcosystemRack } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'WordPress Ecosystem',
-  'KNOuX WordPress: systems for the open web. Themes, blocks, starter sites, extensions and bundles, plus the operating work that keeps an install correct.',
+  'KNOuX WordPress: first-party releases reported honestly alongside live discovery from the official WordPress.org plugin, theme, block and pattern directories, plus the operating work that keeps an install correct.',
   '/wordpress',
 );
 
-export default function WordPressPage() {
+export default async function WordPressPage() {
+  // Two bounded reads for the overview. The whole directory is never requested.
+  const [plugins, themes] = await Promise.all([featuredPlugins(6), featuredThemes(6)]);
+
   return (
     <main id="main-content">
       <TrackOnView event={{ type: 'division_opened', division: 'wordpress', route: '/wordpress' }} />
@@ -69,24 +75,135 @@ export default function WordPressPage() {
 
       <WordPressGoalIndex />
 
-      {/* Catalogue surfaces */}
+      {/* Two layers, reported separately and never merged */}
       <section className="shell" id="catalogues" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
         <div className="block-head">
           <div>
-            <span className="label label--signal">REGISTRY STATE</span>
+            <span className="label label--signal">TWO LAYERS</span>
             <h2 className="block-head__title">
-              The catalogue
+              What KNOuX publishes,
               <br />
-              is empty.
+              and what WordPress.org publishes.
             </h2>
           </div>
           <p className="block-head__aside">
-            Every WordPress route below exists with its filters, index and detail surface wired to a registry. No
-            KNOuX WordPress release has been published, so no item is listed.
+            KNOuX has released no WordPress files of its own yet, and that number stays visible. Everything
+            discoverable below is third-party work read live from the official WordPress.org directories and
+            attributed to its authors.
           </p>
         </div>
 
+        <div className="wp-layers">
+          <div className="wp-layers__cell">
+            <span className="wp-layers__label">KNOuX Releases</span>
+            <p className="wp-layers__count">
+              <strong>{wordPressItems.length}</strong> published
+            </p>
+            <p className="wp-layers__body">
+              First-party files only. An entry appears when a repository or a verifiable download establishes a
+              real KNOuX release.
+            </p>
+            <p className="meta-row" style={{ marginTop: 18 }}>
+              <span>THEMES 0</span>
+              <span>PLUGINS 0</span>
+              <span>BLOCKS 0</span>
+            </p>
+          </div>
+          <div className="wp-layers__cell">
+            <span className="wp-layers__label">WordPress.org Discovery</span>
+            <p className="wp-layers__count">
+              <strong>Live</strong> directory
+            </p>
+            <p className="wp-layers__body">
+              Read on request from the official WordPress.org plugin, theme and pattern APIs. Nothing is cached
+              into the KNOuX registry and nothing here is claimed as KNOuX work.
+            </p>
+            <p className="meta-row" style={{ marginTop: 18 }}>
+              <span>PLUGINS {plugins.state === 'ok' && plugins.totalKnown ? plugins.totalItems.toLocaleString('en-US') : 'LIVE'}</span>
+              <span>THEMES {themes.state === 'ok' && themes.totalKnown ? themes.totalItems.toLocaleString('en-US') : 'LIVE'}</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="mp-firstparty__links" style={{ marginTop: 30 }}>
+          <Link href="/wordpress/plugins">Browse plugins</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/wordpress/themes">Browse themes</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/wordpress/blocks">Browse blocks</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/wordpress/patterns">Browse patterns</Link>
+        </div>
+
         <EcosystemRack />
+      </section>
+
+      {/* Live discovery */}
+      <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
+        <div className="block-head">
+          <div>
+            <span className="label label--signal">EXPLORE WORDPRESS.ORG</span>
+            <h2 className="block-head__title">
+              Most used plugins,
+              <br />
+              right now.
+            </h2>
+          </div>
+          <p className="block-head__aside">
+            Six entries read live from the official plugin directory. Open the full route to search, filter and
+            page through the directory.
+          </p>
+        </div>
+        {plugins.state === 'ok' ? (
+          <ul className="mp-grid mp-grid--compact">
+            {plugins.items.map((item, index) => (
+              <li key={item.slug}>
+                <ExternalItemCard item={item} index={index} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="mp-state" role="status">
+            <span className="label label--signal">UPSTREAM UNAVAILABLE</span>
+            <p className="mp-state__body">{plugins.note}</p>
+          </div>
+        )}
+        <div className="mp-firstparty__links" style={{ marginTop: 24 }}>
+          <Link href="/wordpress/plugins">Search all plugins</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/wordpress/themes">Search all themes</Link>
+        </div>
+      </section>
+
+      <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
+        <div className="block-head">
+          <div>
+            <span className="label label--signal">EXPLORE WORDPRESS.ORG</span>
+            <h2 className="block-head__title">
+              Recent themes
+              <br />
+              from the directory.
+            </h2>
+          </div>
+          <p className="block-head__aside">
+            Six theme entries with the screenshots published upstream, served through the asset proxy on this
+            site.
+          </p>
+        </div>
+        {themes.state === 'ok' ? (
+          <ul className="mp-grid mp-grid--compact">
+            {themes.items.map((item, index) => (
+              <li key={item.slug}>
+                <ExternalItemCard item={item} index={index} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="mp-state" role="status">
+            <span className="label label--signal">UPSTREAM UNAVAILABLE</span>
+            <p className="mp-state__body">{themes.note}</p>
+          </div>
+        )}
       </section>
 
       {/* Operating services */}
@@ -124,7 +241,8 @@ export default function WordPressPage() {
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
         <p className="meta-row" style={{ marginBottom: 30 }}>
-          <span>REGISTRY: {wordPressItems.length} RELEASES</span>
+          <span>KNOuX RELEASES: {wordPressItems.length}</span>
+          <span>EXTERNAL: WORDPRESS.ORG DIRECTORIES</span>
           <span>SERVICES: {wordPressServices.length}</span>
           <span>GOALS: 5</span>
         </p>

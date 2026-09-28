@@ -97,16 +97,15 @@ export function KnouxField({
       stars = buildStarField(light ? 58 : 170);
       mark = buildMarkField(light ? 170 : 420);
 
-      const target = light ? Math.min(markHeight * 0.6, height * 0.26) : Math.min(markHeight, height * 0.44);
+      const target = light ? Math.min(markHeight * 0.58, height * 0.24) : Math.min(markHeight, height * 0.52);
       markScale = target / MARK_WORLD_HEIGHT;
-      // The mark stands in the left/central field, clear of the figure that
-      // arrives in the left third and of the panel on the right, so the three
-      // elements never compete for the same patch of room. On a phone the field
-      // is a shallow band above the form, with the operator to the left of it.
-      markCentreX = compact ? width * 0.62 : Math.min(width * 0.4, 620);
-      // On a phone the band sits between the fixed header and the form, so the
-      // mark is centred inside that band rather than in the viewport.
-      markCentreY = compact ? height * 0.185 : height * 0.42;
+      // The canonical mark owns the negative-space side of the auth chamber.
+      // There is deliberately no character/mascot competing with it: the same
+      // particle identity used by KNOuX becomes the sole cinematic subject.
+      markCentreX = compact ? width * 0.5 : Math.min(width * 0.33, 560);
+      // On phones the mark remains a compact identity band above the form; on
+      // desktop it sits optically centred against the auth panel.
+      markCentreY = compact ? height * 0.19 : height * 0.47;
     };
 
     const drawStars = (seconds: number) => {

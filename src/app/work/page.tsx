@@ -1,12 +1,11 @@
 import { PageIntro } from '@/components/PageIntro';
-import { DevState } from '@/components/DivisionShell';
 import { DivisionBridge, NextLink } from '@/components/blocks';
 import { pageMetadata } from '@/lib/metadata';
-import { ProjectRail } from '@/components/SpatialExperiences';
+import { CaseFileArchive } from '@/components/SpecialistArchives';
 
 export const metadata = pageMetadata(
   'Work',
-  'Verified KNOuX project records. The archive is empty by evidence: no case study publishes until it can be documented to a checkable standard.',
+  'Verified KNOuX product and engineering records presented as evidence-backed case files without invented clients, metrics or outcomes.',
   '/work',
 );
 
@@ -17,53 +16,30 @@ export default function WorkPage() {
         index="10"
         label="Work"
         title="The work"
-        italic="speaks precisely."
-        description="A home for documented systems, real constraints and outcomes that can be checked. Nothing is published here yet."
+        italic="stays checkable."
+        description="An interactive archive of systems KNOuX actually maintains. Every public statement resolves to repository evidence; unsupported client stories and performance claims stay out."
       />
 
-      <section className="shell" style={{ paddingTop: 'clamp(50px, 6vw, 100px)', paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
-        <DevState
-          mark="EMPTY BY EVIDENCE"
-          title="No case study meets the bar yet."
-          detail={[
-            {
-              heading: 'The bar',
-              body: 'A case study needs a real constraint, a decision that was genuinely difficult, and an outcome that can be verified. A screenshot and a percentage improvement is not a case study.',
-            },
-            {
-              heading: 'What is not shown instead',
-              body: 'No client logos, no testimonials, no review scores, no before-and-after metrics, no industry labels. Each of those would be invented rather than documented.',
-            },
-            {
-              heading: 'Where the verifiable record is',
-              body: 'The product universe publishes the systems KNOuX actually maintains, with each repository&rsquo;s own stated limits alongside its capabilities. That is the evidence this practice can stand behind today.',
-            },
-          ]}
-        >
+      <section
+        className="shell specialist-intro"
+        style={{ paddingTop: 'clamp(64px, 7vw, 118px)', paddingBottom: 'clamp(76px, 8vw, 132px)' }}
+      >
+        <div className="specialist-intro__head">
+          <span className="label label--signal">CASE FILES / VERIFIED PRODUCTS</span>
           <p>
-            This page is deliberately empty. A work archive filled with unattributed screenshots and unattributed
-            numbers is a common way for a site to imply a track record it does not have, and it would misrepresent
-            the practice to anyone reading it carefully.
+            These are product and engineering records, not fictional client case studies. Technology, constraints,
+            implementation evidence and repository sources come from the maintained KNOuX product registry.
           </p>
-          <p>
-            The route, the layout and the disclosure are in place. When work is documented to a standard that can
-            be checked, it publishes here.
-          </p>
-        </DevState>
+        </div>
+        <CaseFileArchive />
       </section>
-
-      <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
-        <span className="label label--signal">WHAT IS DOCUMENTED TODAY</span>
-        <ProjectRail />
-      </section>
-
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
         <DivisionBridge
           label="ACROSS DIVISIONS"
-          title="Want work done rather than read?"
-          body="KNOuX takes on builds across every division. A conversation about scope comes before any figure."
-          href="/contact"
-          action="Contact KNOuX"
+          title="Want the implementation detail?"
+          body="The Engineering archive opens the same verified systems at a deeper layer: implementation evidence, declared constraints, technology and system relationships."
+          href="/engineering"
+          action="Open Engineering"
         />
         <div style={{ marginTop: 60 }}>
           <NextLink label="Institution" name="About KNOuX" href="/about" />

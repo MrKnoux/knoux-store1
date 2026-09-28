@@ -154,15 +154,33 @@ test('production routes, deep links, sitemap and honest contact delivery', async
 test('division pages render their registry honestly', async () => {
   await waitForServer();
 
-  const themes = await (await fetch(origin + '/wordpress/themes')).text();
-  assert.match(themes, /IN DEVELOPMENT/, 'an empty catalogue must state its state');
-  assert.match(themes, /0 themes published/i, 'the themes surface must report its count');
-  assert.ok(!/demo\.knoux\./.test(themes), 'no demo URL may be invented for an unreleased theme');
+  // The WordPress division now carries two layers. The protective intent of the
+  // old assertion is kept in full: the KNOuX-owned registry must still report
+  // zero, no demo URL may be invented, and no price may appear. What changes is
+  // that the division also serves live third-party discovery, so the copy that
+  // claimed the whole catalogue was empty is no longer true and is gone.
+  for (const [route, noun] of [
+    ['/wordpress/themes', /0 themes published by KNOuX/i],
+    ['/wordpress/plugins', /0 plugins published by KNOuX/i],
+    ['/wordpress/blocks', /0 blocks published by KNOuX/i],
+  ]) {
+    const html = await (await fetch(origin + route)).text();
+    // React separates interpolated text nodes with empty comment markers, so
+    // the rendered sentence is not contiguous in the markup.
+    const text = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    assert.match(text, noun, `${route} must still report that KNOuX has released nothing`);
+    assert.ok(!/demo\.knoux\./.test(html), `no demo URL may be invented on ${route}`);
+    const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+    assert.ok(!/\$[0-9]/.test(visible), `no price may be shown on ${route}`);
+  }
 
-  const plugins = await (await fetch(origin + '/wordpress/plugins')).text();
-  assert.match(plugins, /0 plugins registered/i, 'the extension registry must report its count');
-  const pluginText = plugins.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
-  assert.ok(!/\$[0-9]/.test(pluginText), 'no price may be shown for an unreleased plugin');
+  // External discovery must be attributed, never presented as KNOuX output.
+  for (const route of ['/wordpress/plugins', '/wordpress/themes', '/wordpress/patterns']) {
+    const html = await (await fetch(origin + route)).text();
+    const text = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    assert.match(text, /Source: WordPress\.org/, `${route} must attribute the external source`);
+    assert.match(text, /WORDPRESS\.ORG DISCOVERY/i, `${route} must label the external layer`);
+  }
 
   const growth = await (await fetch(origin + '/growth')).text();
   assert.match(growth, /CAMPAIGN BUDGET/i, 'the growth entry must accept a campaign budget');

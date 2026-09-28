@@ -1,6 +1,8 @@
 import { PageIntro } from '@/components/PageIntro';
-import { DevState, SignalRail } from '@/components/DivisionShell';
+import { SignalRail } from '@/components/DivisionShell';
 import { DivisionBridge, NextLink, SystemIndex, IndexRow, BlockHead } from '@/components/blocks';
+import { ExternalMarketplace, readMarketplaceQuery } from '@/components/wordpress/ExternalMarketplace';
+import { FirstPartyRail } from '@/components/wordpress/FirstPartyRail';
 import {
   starterSiteVerticals,
   wordpressCategories,
@@ -8,21 +10,74 @@ import {
   wordPressItems,
   wordPressServices,
   type WordPressCategory,
+  type WordPressItemType,
 } from '@/data/wordpress';
+import { queryBlocks, queryPlugins, queryThemes } from '@/lib/wordpress/wordpress-org';
 import { entityById } from '@/data/composer-rules';
 
 /**
  * The five WordPress catalogue routes.
  *
- * Each one is a real page with real architecture and an honest empty registry.
- * The filters, the detail surface and the composer wiring all exist; the
- * catalogue they read from does not yet contain a release.
+ * Each one is a real page with real architecture. Two layers are kept
+ * deliberately separate:
+ *
+ *   KNOuX Releases      first-party, from `wordPressItems`, currently zero
+ *   WordPress.org       live external discovery from the official APIs
+ *
+ * The first-party registry is never populated to fill the page, and external
+ * items are never written into it or given KNOuX ownership.
  */
-export function WordPressCategoryPage({ category }: { category: WordPressCategory }) {
+
+type SearchParams = Record<string, string | string[] | undefined>;
+
+/** Which official source backs each category, if any. */
+const EXTERNAL_SOURCE: Partial<Record<WordPressCategory, 'plugin' | 'theme' | 'block'>> = {
+  plugins: 'plugin',
+  themes: 'theme',
+  blocks: 'block',
+};
+
+/** Singular noun for the first-party rail, so the count reads correctly at zero. */
+function singularLabel(type: WordPressItemType): string {
+  switch (type) {
+    case 'theme':
+      return 'theme';
+    case 'plugin':
+      return 'plugin';
+    case 'block':
+      return 'block';
+    case 'starter-site':
+      return 'starter site';
+    case 'woocommerce-extension':
+      return 'WooCommerce extension';
+    case 'integration':
+      return 'integration';
+    default:
+      return 'bundle';
+  }
+}
+
+export async function WordPressCategoryPage({
+  category,
+  searchParams,
+}: {
+  category: WordPressCategory;
+  searchParams?: SearchParams;
+}) {
   const meta = wordpressCategories.find((entry) => entry.slug === category);
   if (!meta) return null;
 
   const count = wordPressItems.filter((item) => item.type === meta.type).length;
+  const source = EXTERNAL_SOURCE[category];
+  const query = readMarketplaceQuery(searchParams ?? {});
+
+  const external = source
+    ? source === 'plugin'
+      ? await queryPlugins({ search: query.search, page: query.page, perPage: query.perPage })
+      : source === 'theme'
+        ? await queryThemes({ search: query.search, page: query.page, perPage: query.perPage })
+        : await queryBlocks({ search: query.search, page: query.page, perPage: query.perPage })
+    : null;
 
   return (
     <main id="main-content">
@@ -35,46 +90,33 @@ export function WordPressCategoryPage({ category }: { category: WordPressCategor
       />
       <SignalRail division="wordpress" path={`/wordpress/${category}`} />
 
-      <section className="shell" style={{ paddingTop: 'clamp(56px, 7vw, 110px)', paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
-        <DevState
-          title={`No ${meta.label.toLowerCase()} are published yet.`}
-          detail={[
-            {
-              heading: 'Why this catalogue is empty',
-              body: 'An entry is published when a release exists and a repository or download establishes it. Nothing in the KNOuX WordPress ecosystem has been released, so nothing is listed. Filling the page with plausible entries would misrepresent what has shipped.',
-            },
-            {
-              heading: 'What the schema already supports',
-              body: 'Version, compatibility, WooCommerce support, licence, documentation, demo, screenshots, update feed, related items and solution tags are all modelled. A release becomes a data change, not a redesign.',
-            },
-            {
-              heading: 'What is available today',
-              body: 'KNOuX performs WordPress work as engineering services: install, migration, maintenance, performance, security, backup and headless delivery. Those are listed on the overview and scoped individually.',
-            },
-          ]}
-        >
-          <p>
-            This route is the {meta.label.toLowerCase()} registry of the KNOuX WordPress ecosystem. Its filters,
-            detail surface and composer rules are wired to <code className="mono">wordPressItems</code>. The
-            registry currently contains{' '}
-            <strong className="mono">
-              {count} {meta.type}
-              {count === 1 ? '' : 's'}
-            </strong>
-            .
-          </p>
-          <p>
-            The section below shows the structure that will be filled. Adding the first release requires no
-            change to this page.
-          </p>
-        </DevState>
-      </section>
+      <FirstPartyRail type={meta.type} label={singularLabel(meta.type)} />
+
+      {external ? (
+        <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
+          <ExternalMarketplace
+            basePath={`/wordpress/${category}`}
+            query={query}
+            result={external}
+            kindLabel={source === 'plugin' ? 'Plugins' : source === 'theme' ? 'Themes' : 'Blocks'}
+            kindNoun={singularLabel(meta.type)}
+            kindRoute={`/wordpress/${category}`}
+            firstPartyCount={count}
+          />
+        </section>
+      ) : null}
 
       {category === 'starter-sites' ? <StarterSiteFilters /> : null}
       {category === 'solutions' ? <BundleSurface /> : null}
-      {category === 'blocks' ? <BlockSurface /> : null}
-      {category === 'plugins' ? <ExtensionSurface /> : null}
-      {category === 'themes' ? <ThemeSurface /> : null}
+
+      {category === 'starter-sites' ? (
+        <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
+          <FirstPartyOnlyNotice
+            title="No official WordPress.org directory exists for starter sites"
+            body="WordPress.org publishes plugin, theme, block and pattern directories. It does not publish a starter-site directory with a documented API, so this route stays first-party rather than filling itself from an unofficial source."
+          />
+        </section>
+      ) : null}
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
         <DivisionBridge
@@ -97,6 +139,16 @@ export function WordPressCategoryPage({ category }: { category: WordPressCategor
         </div>
       </section>
     </main>
+  );
+}
+
+function FirstPartyOnlyNotice({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="mp-state" role="note">
+      <span className="label label--signal">FIRST-PARTY ONLY</span>
+      <h3 className="mp-state__title">{title}</h3>
+      <p className="mp-state__body">{body}</p>
+    </div>
   );
 }
 
@@ -142,67 +194,6 @@ function BundleSurface() {
           />
         ))}
       </div>
-    </section>
-  );
-}
-
-function BlockSurface() {
-  return (
-    <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
-      <BlockHead
-        code="REGISTRY ROWS"
-        title="The block registry surface"
-        aside="When blocks are published they appear here as compact technical rows rather than marketplace cards: identifier, purpose, compatibility, status and capability tags."
-      />
-      <div className="registry" style={{ marginTop: 26 }}>
-        <div className="registry-row" style={{ borderBottomColor: '#3d3e43' }}>
-          <span className="registry-row__id">ID</span>
-          <span className="registry-row__name">Name</span>
-          <span className="registry-row__purpose">Purpose</span>
-          <span className="registry-row__compat">Compatibility</span>
-          <span className="label">Status</span>
-          <span aria-hidden="true" />
-        </div>
-        <p className="finder-empty" style={{ borderTop: 0 }}>
-          <strong>0 blocks registered.</strong>
-          This row layout, the search, the keyboard navigation and the capability tags are in place. No block has
-          been released, so no row is rendered.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function ExtensionSurface() {
-  return (
-    <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
-      <BlockHead
-        code="EXTENSION REGISTRY"
-        title="Extensions, read as a registry"
-        aside="Plugins are listed as technical rows with an identifier, a purpose, compatibility and a status. No pricing is shown because no plugin is released and no payment infrastructure exists."
-      />
-      <p className="finder-empty" style={{ borderTop: 0 }}>
-        <strong>0 plugins registered.</strong>
-        The registry supports free, premium, WooCommerce extensions, integrations, bundles, licences, versions and
-        update feeds. None have been published.
-      </p>
-    </section>
-  );
-}
-
-function ThemeSurface() {
-  return (
-    <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
-      <BlockHead
-        code="EDITORIAL GALLERY"
-        title="The theme gallery surface"
-        aside="Themes will be presented as an editorial gallery with a large preview, a vertical index, a category selector, a desktop and mobile switch and a details drawer — not marketplace cards."
-      />
-      <p className="finder-empty" style={{ borderTop: 0 }}>
-        <strong>0 themes published.</strong>
-        No theme is released, so no preview, demo link or download link is shown. Inventing a demo URL would
-        produce a dead link on a page that claims to be a catalogue.
-      </p>
     </section>
   );
 }
