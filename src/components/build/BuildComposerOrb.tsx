@@ -417,18 +417,16 @@ export function BuildComposerOrbCanvas({
   style,
 }: BuildComposerOrbCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-  const [webglAvailable, setWebglAvailable] = useState(true);
-  const [inView, setInView] = useState(true);
-  const [pageVisible, setPageVisible] = useState(true);
-
-  useEffect(() => {
-    setMounted(true);
+  const [webglAvailable] = useState(() => {
+    if (typeof document === 'undefined') return true;
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    setWebglAvailable(!!gl);
-    setPageVisible(!document.hidden);
-  }, []);
+    return Boolean(gl);
+  });
+  const [inView, setInView] = useState(true);
+  const [pageVisible, setPageVisible] = useState(
+    () => typeof document === 'undefined' || !document.hidden,
+  );
 
   useEffect(() => {
     const element = containerRef.current;
@@ -439,7 +437,7 @@ export function BuildComposerOrbCanvas({
     );
     observer.observe(element);
     return () => observer.disconnect();
-  }, [mounted]);
+  }, []);
 
   useEffect(() => {
     const handleVisibility = () => setPageVisible(!document.hidden);
@@ -455,27 +453,6 @@ export function BuildComposerOrbCanvas({
       selected: node.id === model.selectedId,
     }));
   }, [model]);
-
-  if (!mounted) {
-    return (
-      <div
-        ref={containerRef}
-        className={`build-composer-orb ${className}`}
-        style={{
-          width: '100%',
-          aspectRatio: '1 / 1',
-          minHeight: 400,
-          maxHeight: 600,
-          background: ORB_COLORS.background,
-          borderRadius: 4,
-          overflow: 'hidden',
-          ...style,
-        }}
-        role="img"
-        aria-label="KNOuX Build Intelligence Orb - loading"
-      />
-    );
-  }
 
   if (!webglAvailable) {
     return (
