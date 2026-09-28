@@ -172,8 +172,6 @@ export function scoreEntity(entity: DiscoverableEntity, rawQuery: string): numbe
     if (candidate === query) score += 55;
     else if (candidate.startsWith(query)) score += 32;
     else if (candidate.includes(query)) score += 20;
-    // Multi-word queries match individual words as a weaker signal.
-    else if (query.includes(candidate)) score += 14;
   }
 
   for (const category of entity.categories) {
@@ -184,6 +182,7 @@ export function scoreEntity(entity: DiscoverableEntity, rawQuery: string): numbe
 
   for (const term of query.split(/\s+/)) {
     if (term.length < 3) continue;
+    if (term === 'knoux' && query !== 'knoux') continue;
     if (name.includes(term)) score += 6;
     if (entity.searchTerms.some((search) => search.toLowerCase().includes(term))) score += 4;
   }

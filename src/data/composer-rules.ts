@@ -4,7 +4,7 @@ import { creativeEntities, webEntities } from '@/data/services';
 import { growthEntities } from '@/data/growth';
 import { solutionEntities } from '@/data/solutions';
 import { wordPressEntities } from '@/data/wordpress';
-import { softwareEntities } from '@/data/software';
+import { labEntities, softwareEntities } from '@/data/software';
 
 /**
  * Unified discovery index.
@@ -16,7 +16,7 @@ import { softwareEntities } from '@/data/software';
 
 export const routeEntities: DiscoverableEntity[] = [
   { id: 'route-home', kind: 'route', division: 'institution', code: 'RT', slug: 'home', name: 'Headquarters', shortName: 'Home', summary: 'The KNOuX digital headquarters.', status: 'active', route: '/', categories: ['headquarters'], searchTerms: ['home', 'start', 'knoux', 'headquarters', 'main page'], capabilities: [], relatedIds: [] },
-  { id: 'route-labs', kind: 'route', division: 'labs', code: 'RT', slug: 'labs', name: 'Labs', shortName: 'Labs', summary: 'Research, experiments and unfinished systems.', status: 'active', route: '/labs', categories: ['institution'], searchTerms: ['labs', 'research', 'experiments', 'prototype', 'wip'], capabilities: [], relatedIds: [] },
+  { id: 'route-labs', kind: 'route', division: 'labs', code: 'RT', slug: 'labs', name: 'Labs', shortName: 'Labs', summary: 'Research, experiments and unfinished systems.', status: 'active', route: '/labs', categories: ['institution'], searchTerms: ['labs', 'research', 'experiments', 'prototype', 'wip'], capabilities: [], relatedIds: ['lab-quill', 'lab-crypt'] },
   { id: 'route-work', kind: 'route', division: 'institution', code: 'RT', slug: 'work', name: 'Work', shortName: 'Work', summary: 'Verified project records. Currently empty by evidence.', status: 'active', route: '/work', categories: ['institution'], searchTerms: ['work', 'case study', 'projects', 'portfolio', 'clients'], capabilities: [], relatedIds: [] },
   { id: 'route-engineering', kind: 'route', division: 'institution', code: 'RT', slug: 'engineering', name: 'Engineering', shortName: 'Engineering', summary: 'How KNOuX works from interface to delivery.', status: 'active', route: '/engineering', categories: ['institution'], searchTerms: ['engineering', 'process', 'method', 'practice', 'how you work'], capabilities: [], relatedIds: [] },
   { id: 'route-about', kind: 'route', division: 'institution', code: 'RT', slug: 'about', name: 'About', shortName: 'About', summary: 'The institution.', status: 'active', route: '/about', categories: ['institution'], searchTerms: ['about', 'who is knoux', 'institution', 'company'], capabilities: [], relatedIds: [] },
@@ -27,6 +27,7 @@ export const routeEntities: DiscoverableEntity[] = [
 export const allEntities: readonly DiscoverableEntity[] = [
   ...routeEntities,
   ...softwareEntities(),
+  ...labEntities(),
   ...wordPressEntities(),
   ...webEntities(),
   ...growthEntities(),

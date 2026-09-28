@@ -10,6 +10,7 @@ import { growthChannelsDetail, growthModules } from '@/data/growth';
 import { creativeDisciplines } from '@/data/services';
 import { solutions } from '@/data/solutions';
 import { capabilities } from '@/data/capabilities';
+import { ArchitecturalMap } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'About',
@@ -60,13 +61,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
+      <div style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <SystemIndex
           eyebrow="DIVISIONS"
           title={<>Eight wings,<br />one institution.</>}
           statement="Each division is a different discipline with its own registry. They share navigation, data model, motion grammar, search and request architecture."
         >
-          <div className="index-rows">
+          <ArchitecturalMap />
+          <details className="evidence-disclosure"><summary>VIEW DIVISION REGISTRY</summary><div className="index-rows">
             {divisions.map((division) => (
               <IndexRow
                 key={division.id}
@@ -77,9 +79,9 @@ export default function AboutPage() {
                 href={division.route}
               />
             ))}
-          </div>
+          </div></details>
         </SystemIndex>
-      </section>
+      </div>
 
       <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <div className="block-head">
@@ -92,7 +94,7 @@ export default function AboutPage() {
             no download number and no team size on this page, because none of those are established.
           </p>
         </div>
-        <dl className="telemetry-strip" style={{ marginTop: 34, gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
+        <details className="evidence-disclosure"><summary>VIEW COUNTABLE REGISTRY STATE</summary><dl className="telemetry-strip" style={{ marginTop: 34, gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
           <div>
             <dt>Divisions</dt>
             <dd>{divisions.length}</dd>
@@ -141,7 +143,7 @@ export default function AboutPage() {
             <dt>Audit date</dt>
             <dd style={{ fontSize: 11 }}>{softwareAuditDate}</dd>
           </div>
-        </dl>
+        </dl></details>
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>

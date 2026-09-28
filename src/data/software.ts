@@ -481,6 +481,26 @@ export const labExperiments: readonly LabExperiment[] = [
   },
 ];
 
+/** Labs are discoverable as experiments, never as released software. */
+export function labEntities(): DiscoverableEntity[] {
+  return labExperiments.map((experiment) => ({
+    id: experiment.id,
+    kind: 'experiment',
+    division: 'labs',
+    code: experiment.code,
+    slug: experiment.id,
+    name: experiment.name,
+    shortName: experiment.name.replace(/^KNOuX /i, ''),
+    summary: experiment.statement,
+    status: experiment.status,
+    route: `/labs#${experiment.id}`,
+    categories: ['research', 'experiment'],
+    searchTerms: [experiment.name, experiment.statement, experiment.stack],
+    capabilities: [],
+    relatedIds: [],
+  }));
+}
+
 export function findSoftwareProduct(slug: string): SoftwareProduct | undefined {
   return softwareProducts.find((product) => product.slug === slug);
 }

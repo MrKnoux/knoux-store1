@@ -82,6 +82,7 @@ export function CommandPalette() {
       .map(([label, value]) => ({ label, entities: value.entities }))
       .sort((a, b) => rankFor(a.label) - rankFor(b.label));
   }, [results]);
+  const orderedResults = useMemo(() => grouped.flatMap((group) => group.entities), [grouped]);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -152,18 +153,18 @@ export function CommandPalette() {
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
-      setActive((current) => (results.length ? (current + 1) % results.length : 0));
+      setActive((current) => (orderedResults.length ? (current + 1) % orderedResults.length : 0));
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
-      setActive((current) => (results.length ? (current - 1 + results.length) % results.length : 0));
+      setActive((current) => (orderedResults.length ? (current - 1 + orderedResults.length) % orderedResults.length : 0));
     } else if (event.key === 'Home') {
       event.preventDefault();
       setActive(0);
     } else if (event.key === 'End') {
       event.preventDefault();
-      setActive(Math.max(results.length - 1, 0));
+      setActive(Math.max(orderedResults.length - 1, 0));
     } else if (event.key === 'Enter') {
-      const entity = results[active];
+      const entity = orderedResults[active];
       if (entity) {
         event.preventDefault();
         go(entity);

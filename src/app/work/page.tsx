@@ -2,7 +2,7 @@ import { PageIntro } from '@/components/PageIntro';
 import { DevState } from '@/components/DivisionShell';
 import { DivisionBridge, NextLink } from '@/components/blocks';
 import { pageMetadata } from '@/lib/metadata';
-import { softwareProducts } from '@/data/software';
+import { ProjectRail } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Work',
@@ -54,23 +54,7 @@ export default function WorkPage() {
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
         <span className="label label--signal">WHAT IS DOCUMENTED TODAY</span>
-        <div className="index-rows" style={{ marginTop: 22 }}>
-          {softwareProducts.map((product) => (
-            <a key={product.id} className="index-row" href={`/products/${product.slug}`}>
-              <span className="index-row__index">{product.code}</span>
-              <span className="index-row__name">{product.name}</span>
-              <span className="index-row__meta">
-                <span>{product.tagline}</span>
-                <span className="mono">
-                  {product.capabilities.length} CAPABILITIES / {product.limitations.length} STATED LIMITS
-                </span>
-              </span>
-              <span className="index-row__arrow" aria-hidden="true">
-                ↗
-              </span>
-            </a>
-          ))}
-        </div>
+        <ProjectRail />
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>
