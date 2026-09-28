@@ -1,5 +1,6 @@
 import { divisions, type DivisionId } from '@/lib/entities';
 import type { CapabilityDivisionId } from '@/data/capabilities';
+import { creativeDisciplines, findCreativeDiscipline, findWebSystem, webSystems } from '@/data/services';
 
 /**
  * Site navigation.
@@ -65,6 +66,7 @@ export const divisionSubnavs: readonly DivisionSubnav[] = [
     label: 'Web',
     items: [
       { label: 'Systems Studio', href: '/web', code: 'WEB' },
+      ...webSystems.map((system) => ({ label: system.shortName, href: `/web/${system.slug}`, code: system.code })),
       { label: 'Capability Matrix', href: '/web#matrix', code: 'MTX' },
       { label: 'Engineering', href: '/engineering', code: 'ENG' },
     ],
@@ -86,6 +88,7 @@ export const divisionSubnavs: readonly DivisionSubnav[] = [
     label: 'Creative',
     items: [
       { label: 'Capabilities', href: '/creative', code: 'CR' },
+      ...creativeDisciplines.map((discipline) => ({ label: discipline.shortName, href: `/creative/${discipline.slug}`, code: discipline.code })),
       { label: 'Work', href: '/work', code: 'WK' },
     ],
   },
@@ -135,6 +138,18 @@ export function breadcrumbFor(path: string): Breadcrumb[] {
   if (first === 'solutions' && second) {
     trail.push({ label: 'Solutions', href: '/solutions' });
     trail.push({ label: segments[2]?.replace(/-/g, ' ') ?? 'Overview', href: null });
+    return trail;
+  }
+  if (first === 'web' && second) {
+    const system = findWebSystem(second);
+    trail.push({ label: 'Web', href: '/web' });
+    trail.push({ label: system?.title ?? second.replace(/-/g, ' '), href: null });
+    return trail;
+  }
+  if (first === 'creative' && second) {
+    const discipline = findCreativeDiscipline(second);
+    trail.push({ label: 'Creative', href: '/creative' });
+    trail.push({ label: discipline?.title ?? second.replace(/-/g, ' '), href: null });
     return trail;
   }
 

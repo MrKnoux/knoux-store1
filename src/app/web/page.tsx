@@ -84,7 +84,7 @@ export default function WebPage() {
                 name={system.title}
                 meta={system.tagline}
                 metaSecondary={`${system.disciplines.length} DISCIPLINES / ${system.artefacts.length} ARTEFACTS`}
-                href={`/web?system=${system.slug}`}
+                href={`/web/${system.slug}`}
               />
             ))}
           </div>

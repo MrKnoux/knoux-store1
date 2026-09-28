@@ -5,6 +5,8 @@ import { DivisionBridge, NextLink, RevealGroup } from '@/components/blocks';
 import { DevState } from '@/components/DivisionShell';
 import { pageMetadata } from '@/lib/metadata';
 import { creativeDisciplines } from '@/data/services';
+import { capabilityById } from '@/data/capabilities';
+import { entityById } from '@/data/composer-rules';
 import { TrackOnView } from '@/components/TrackOnView';
 import { MaterialLab } from '@/components/SpatialExperiences';
 
@@ -32,9 +34,9 @@ export default function CreativePage() {
       <section className="shell" style={{ paddingTop: 'clamp(50px, 6vw, 100px)', paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <nav aria-label="Creative disciplines" className="finder-chips">
           {creativeDisciplines.map((discipline) => (
-            <a key={discipline.id} className="tag tag--button" href={`#${discipline.slug}`}>
+            <Link key={discipline.id} className="tag tag--button" href={`/creative/${discipline.slug}`}>
               {discipline.shortName.toUpperCase()}
-            </a>
+            </Link>
           ))}
         </nav>
       </section>
@@ -51,6 +53,7 @@ export default function CreativePage() {
                   <h3>{discipline.title}</h3>
                   <p className="discipline__sub">{discipline.subtitle}</p>
                   <p className="discipline__statement">{discipline.statement}</p>
+                  <Link href={`/creative/${discipline.slug}`} className="action" style={{ marginTop: 18 }}>EXPLORE DISCIPLINE <span className="action-arrow" aria-hidden="true">↗</span></Link>
                   <div className="discipline__list">
                     <h4>DELIVERABLES</h4>
                     <ul>
@@ -70,10 +73,13 @@ export default function CreativePage() {
                   <span className="dossier-card__label">PAIRS WITH</span>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {discipline.pairsWith.map((pairId) => {
-                      const label = PAIRS[pairId] ?? pairId;
+                      const entity = entityById.get(pairId);
+                      const capability = capabilityById.get(pairId);
+                      const href = entity?.route ?? (capability?.providedBy.includes('web') ? '/web#matrix' : capability?.providedBy.includes('wordpress') ? '/wordpress' : capability?.providedBy.includes('growth') ? '/growth' : capability?.providedBy.includes('creative') ? '/creative' : capability?.providedBy.includes('software') ? '/products' : null);
+                      if (!href) return null;
                       return (
-                        <Link key={pairId} href={label} className="action" style={{ padding: '11px 14px', fontSize: 9 }}>
-                          {PAIR_LABEL[pairId] ?? pairId}
+                        <Link key={pairId} href={href} className="action" style={{ padding: '11px 14px', fontSize: 9 }}>
+                          {entity?.name ?? capability?.label ?? pairId}
                           <span className="action-arrow" aria-hidden="true">
                             ↗
                           </span>
@@ -143,43 +149,3 @@ export default function CreativePage() {
     </main>
   );
 }
-
-const PAIRS: Record<string, string> = {
-  'web-corporate': '/web?system=corporate-site',
-  'web-application': '/web?system=web-application',
-  'web-dashboard': '/web?system=admin-dashboard',
-  'web-experience': '/web?system=interactive-experience',
-  'web-landing': '/web?system=corporate-site',
-  'creative-brand-identity': '/creative#brand-identity',
-  'creative-editorial': '/creative#art-direction',
-  'creative-ui-ux': '/creative#ui-ux',
-  'creative-motion': '/creative#motion',
-  'creative-campaign': '/creative#campaign-creative',
-  'creative-social-content': '/creative#social-content',
-  'creative-presentation': '/creative#presentation',
-  'growth-meta-ads': '/growth/meta-ads',
-  'growth-google-ads': '/growth/google-ads',
-  'growth-social': '/growth/social',
-  'growth-content': '/growth/content',
-  'software-engineering': '/products/kforge',
-};
-
-const PAIR_LABEL: Record<string, string> = {
-  'web-corporate': 'Institutional Website',
-  'web-application': 'Web Application',
-  'web-dashboard': 'Admin & Reporting',
-  'web-experience': 'Interactive & Spatial',
-  'web-landing': 'Institutional Website',
-  'creative-brand-identity': 'Brand Identity',
-  'creative-editorial': 'Web Art Direction',
-  'creative-ui-ux': 'UI / UX Architecture',
-  'creative-motion': 'Motion & Interaction',
-  'creative-campaign': 'Campaign Creative',
-  'creative-social-content': 'Social Content',
-  'creative-presentation': 'Presentation Systems',
-  'growth-meta-ads': 'Meta Advertising',
-  'growth-google-ads': 'Google Advertising',
-  'growth-social': 'Social Media',
-  'growth-content': 'Content Systems',
-  'software-engineering': 'KNOuX Forge',
-};

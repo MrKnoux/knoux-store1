@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { capabilityById, capabilities, type Capability, type CapabilityDivisionId } from '@/data/capabilities';
 import { capabilityMatrixDivisions } from '@/data/navigation';
@@ -182,7 +183,7 @@ export function SystemsStudio({
   useEffect(() => {
     const current = systems.find((system) => system.slug === selected);
     if (!current) return;
-    track({ type: 'division_opened', division: 'web', route: `/web?system=${current.slug}` });
+    track({ type: 'division_opened', division: 'web', route: `/web/${current.slug}` });
   }, [selected, systems]);
 
   const current = systems.find((system) => system.slug === selected);
@@ -217,6 +218,7 @@ export function SystemsStudio({
             </span>
             <h3>{current.title}</h3>
             <p>{current.statement}</p>
+            <Link href={`/web/${current.slug}`} className="action" style={{ marginTop: 22 }}>EXPLORE SYSTEM <span className="action-arrow" aria-hidden="true">↗</span></Link>
           </div>
           <div className="systems-panel__body">
             <div>

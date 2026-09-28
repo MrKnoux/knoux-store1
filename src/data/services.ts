@@ -185,6 +185,10 @@ export function webSystemsByCategory(category: WebSystemCategory): WebSystem[] {
   return webSystems.filter((system) => system.category === category);
 }
 
+export function findWebSystem(slug: string): WebSystem | undefined {
+  return webSystems.find((system) => system.slug === slug);
+}
+
 export function webEntities(): DiscoverableEntity[] {
   return webSystems.map((system) => ({
     id: system.id,
@@ -196,7 +200,7 @@ export function webEntities(): DiscoverableEntity[] {
     shortName: system.shortName,
     summary: system.tagline,
     status: 'service',
-    route: `/web?system=${system.slug}`,
+    route: `/web/${system.slug}`,
     categories: ['web', system.category],
     searchTerms: [system.title, system.tagline, ...system.qualifiers.slice(0, 1)],
     capabilities: system.capabilityIds,
@@ -340,6 +344,10 @@ export const creativeDisciplines: readonly CreativeDiscipline[] = [
   },
 ];
 
+export function findCreativeDiscipline(slug: string): CreativeDiscipline | undefined {
+  return creativeDisciplines.find((discipline) => discipline.slug === slug);
+}
+
 export function creativeEntities(): DiscoverableEntity[] {
   return creativeDisciplines.map((discipline) => ({
     id: discipline.id,
@@ -351,7 +359,7 @@ export function creativeEntities(): DiscoverableEntity[] {
     shortName: discipline.shortName,
     summary: discipline.subtitle,
     status: 'service',
-    route: `/creative?discipline=${discipline.slug}`,
+    route: `/creative/${discipline.slug}`,
     categories: ['creative', discipline.slug],
     searchTerms: [discipline.title, discipline.subtitle, ...discipline.principles.slice(0, 1)],
     capabilities: discipline.capabilityIds,

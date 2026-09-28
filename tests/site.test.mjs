@@ -49,6 +49,12 @@ const ROUTES = [
   '/wordpress/starter-sites',
   '/wordpress/solutions',
   '/web',
+  '/web/corporate-site',
+  '/web/ecommerce',
+  '/web/web-application',
+  '/web/customer-portal',
+  '/web/admin-dashboard',
+  '/web/interactive-experience',
   '/growth',
   '/growth/google-ads',
   '/growth/meta-ads',
@@ -56,6 +62,14 @@ const ROUTES = [
   '/growth/content',
   '/growth/seo',
   '/creative',
+  '/creative/brand-identity',
+  '/creative/ui-ux',
+  '/creative/art-direction',
+  '/creative/campaign-creative',
+  '/creative/social-content',
+  '/creative/motion',
+  '/creative/product-visuals',
+  '/creative/presentation',
   '/solutions',
   '/solutions/start-a-business',
   '/solutions/launch-a-new-product',
@@ -119,6 +133,8 @@ test('production routes, deep links, sitemap and honest contact delivery', async
 
   assert.equal((await fetch(origin + '/missing-page')).status, 404, 'unknown routes return 404');
   assert.equal((await fetch(origin + '/products/not-a-product')).status, 404, 'unknown product slugs return 404');
+  assert.equal((await fetch(origin + '/web/not-a-system')).status, 404, 'unknown web system slugs return 404');
+  assert.equal((await fetch(origin + '/creative/not-a-discipline')).status, 404, 'unknown creative discipline slugs return 404');
   assert.equal((await fetch(origin + '/growth/not-a-channel')).status, 404, 'unknown growth slugs return 404');
   assert.equal((await fetch(origin + '/solutions/not-a-solution')).status, 404, 'unknown solution slugs return 404');
 
@@ -202,7 +218,7 @@ test('division pages render their registry honestly', async () => {
 test('searchable routes expose metadata and structured data', async () => {
   await waitForServer();
 
-  for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/about', '/contact', '/products/knoux-one']) {
+  for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/about', '/contact', '/products/knoux-one', ...ROUTES.filter((route) => route.startsWith('/web/') || route.startsWith('/creative/'))]) {
     const html = await (await fetch(origin + path)).text();
     assert.match(html, /rel="canonical"/, `${path} must declare a canonical URL`);
     assert.match(html, /<title>[^<]{10,}<\/title>/, `${path} must have a meaningful title`);
@@ -234,6 +250,9 @@ test('sitemap and robots describe the real site', async () => {
     '/about',
     '/contact',
   ]) {
+    assert.ok(sitemap.includes(`https://knoux.store${path}<`), `sitemap must list ${path}`);
+  }
+  for (const path of ROUTES.filter((route) => route.startsWith('/web/') || route.startsWith('/creative/'))) {
     assert.ok(sitemap.includes(`https://knoux.store${path}<`), `sitemap must list ${path}`);
   }
   for (const product of ['knoux-one', 'kforge', 'knoux-repair', 'knoux-x', 'knoux-clipboard-ai']) {

@@ -3,6 +3,7 @@ import { softwareProducts } from '@/data/software';
 import { growthChannelsDetail } from '@/data/growth';
 import { solutions } from '@/data/solutions';
 import { wordpressCategories } from '@/data/wordpress';
+import { creativeDisciplines, webSystems } from '@/data/services';
 
 const ORIGIN = 'https://knoux.store';
 
@@ -29,9 +30,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/wordpress',
     ...wordpressCategories.map((category: (typeof wordpressCategories)[number]) => category.route),
     '/web',
+    ...webSystems.map((system) => `/web/${system.slug}`),
     '/growth',
     ...growthChannelsDetail.map((channel) => `/growth/${channel.slug}`),
     '/creative',
+    ...creativeDisciplines.map((discipline) => `/creative/${discipline.slug}`),
     '/solutions',
     ...solutions.map((solution) => `/solutions/${solution.slug}`),
     '/build',
