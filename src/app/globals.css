@@ -451,12 +451,9 @@
 .constellation__ticks span { position: absolute; width: 1px; height: 1px; background: #26262c; }
 
 .constellation__readout {
-  position: absolute;
+  position: relative;
   z-index: 8;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 300px;
+  width: auto;
   border-left: 1px solid var(--line);
   background: #0c0d10;
   padding: 30px 26px;
@@ -949,6 +946,141 @@
 /* --- Home section spacing ------------------------------------------ */
 .home-divisions { padding-top: clamp(80px, 9vw, 150px); padding-bottom: clamp(80px, 9vw, 150px); }
 .home-solutions { padding-top: clamp(80px, 9vw, 150px); padding-bottom: clamp(80px, 9vw, 150px); }
+
+/* Cinematic public surfaces share one pointer field. The native cursor stays. */
+.pointer-nucleus{position:fixed;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#c7b3e8;box-shadow:0 0 16px #a18acb;pointer-events:none;z-index:1100;opacity:0;will-change:transform;transition:opacity .2s}
+.pointer-nucleus{transition-duration:var(--motion-response)}
+.architecture-map__zone{transition-duration:var(--motion-response)}
+.palette{transition-duration:var(--motion-search)}
+.mobile-nav{transition-duration:var(--motion-drawer)}
+[data-reveal]{transition-duration:var(--motion-reveal)}
+.constellation.is-departing .constellation__node{transition-duration:var(--motion-route)}
+.spatial-surface{position:relative;isolation:isolate;overflow:hidden;background:#090a0c;border:1px solid #28282d;margin-top:clamp(32px,5vw,70px);--local-x:50%;--local-y:50%;--depth-x:0;--depth-y:0}
+.spatial-surface::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.38;background:radial-gradient(380px circle at var(--local-x) var(--local-y),rgba(135,107,181,.13),transparent 70%);transition:opacity .4s}
+.spatial-surface:not([data-pointer-inside])::before{opacity:0}
+.spatial-grain{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:7.5% 11%;mask-image:radial-gradient(circle at 50% 50%,black,transparent 82%)}
+
+/* Eight wings arranged as an architectural plane. */
+.architecture-map{height:min(72vw,750px);min-height:610px;background:radial-gradient(circle at 50% 49%,#15121c 0,#0c0c10 22%,#090a0c 65%)}
+.architecture-map__coordinate,.architecture-map__footer{position:absolute;z-index:4;font:9px/1.8 var(--mono);letter-spacing:.16em;color:#77737f}
+.architecture-map__coordinate{left:26px;top:22px}.architecture-map__footer{right:26px;bottom:22px}
+.architecture-map__routes{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.architecture-map__routes line{stroke:#777181;stroke-width:.09;stroke-dasharray:.6 1.3;transition:stroke .35s,stroke-width .35s}
+.architecture-map__routes line.is-active{stroke:#bfa5e5;stroke-width:.23;stroke-dasharray:none}
+.architecture-map__orbit{fill:none;stroke:#27232e;stroke-width:.1}
+.architecture-map__core{position:absolute;left:50%;top:49%;transform:translate(-50%,-50%);width:116px;height:116px;border:1px solid #72647e;background:#0e0c12;box-shadow:0 0 80px #8b6cac1a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;z-index:3}
+.architecture-map__core span{font-size:22px;font-weight:700;letter-spacing:-.07em}.architecture-map__core small{font:8px var(--mono);letter-spacing:.18em;color:#a18acb}
+.architecture-map__zone{position:absolute;left:var(--zone-x);top:var(--zone-y);transform:translate(-50%,-50%);z-index:5;width:clamp(126px,15vw,205px);min-height:75px;padding:11px 13px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #36343d;background:#0c0d10ee;color:var(--text);transition:transform .36s var(--ease-entrance),border-color .3s,box-shadow .3s}
+.architecture-map__zone:hover,.architecture-map__zone:focus-visible,.architecture-map__zone.is-active{transform:translate(-50%,-50%) scale(1.07);border-color:#af93d4;box-shadow:0 0 34px #a18acb1c;z-index:8}
+.architecture-map__index,.architecture-map__enter{font:8px var(--mono);letter-spacing:.12em;color:#a18acb}.architecture-map__zone strong{font-size:clamp(15px,1.5vw,22px);font-weight:400;letter-spacing:-.045em}
+.architecture-map__detail{font-size:10px;line-height:1.5;color:#bab4bf;max-height:0;opacity:0;overflow:hidden;transition:max-height .35s,opacity .35s}
+.architecture-map__zone:hover .architecture-map__detail,.architecture-map__zone:focus-visible .architecture-map__detail{max-height:80px;opacity:1}
+.architecture-map__enter{position:absolute;right:12px;top:12px;color:#8f8597;opacity:0}.architecture-map__zone:hover .architecture-map__enter,.architecture-map__zone:focus-visible .architecture-map__enter{opacity:1}
+
+/* One verified product owns the field; controls advance the archive. */
+.project-rail{min-height:560px;background:radial-gradient(ellipse at 27% 50%,#1b1621 0,#0d0d10 38%,#090a0c 75%)}
+.project-rail__top,.project-rail__bottom{display:flex;justify-content:space-between;align-items:center;padding:22px 28px;font:9px var(--mono);letter-spacing:.14em;color:#9a929f}
+.project-rail__top{border-bottom:1px solid #29282e}.project-rail__bottom{border-top:1px solid #29282e}
+.project-rail__body{min-height:445px;display:grid;grid-template-columns:52% 48%;align-items:center;animation:railResolve .48s var(--ease-entrance) both}
+@keyframes railResolve{from{opacity:.25;transform:translateX(24px)}to{opacity:1;transform:none}}
+.project-rail__geometry{height:370px;position:relative;transform:translate(var(--depth-px-x,0px),var(--depth-px-y,0px));transition:transform .2s}
+.project-rail__geometry span{position:absolute;left:50%;top:50%;width:240px;height:240px;border:1px solid #5e536b;transform:translate(-50%,-50%) rotate(35deg);border-radius:35% 65% 54% 46%}
+.project-rail__geometry span:nth-child(2){width:200px;height:200px;border-color:#8c76a672;transform:translate(-50%,-50%) rotate(-35deg)}
+.project-rail__geometry span:nth-child(3){width:13px;height:13px;border-radius:50%;background:#d7d2dc;box-shadow:0 0 35px #b49ad6;left:calc(50% + 150px);top:calc(50% - 126px)}
+.project-rail__geometry::before,.project-rail__geometry::after{content:"";position:absolute;left:50%;top:50%;background:#4e445b;height:1px;width:260px;transform-origin:left;transform:rotate(-40deg);opacity:.55}
+.project-rail__geometry::after{transform:rotate(140deg)}
+.project-rail__geometry i{position:absolute;bottom:16px;left:28px;font:10px var(--mono);letter-spacing:.18em;color:#89818e}
+.project-rail__copy{padding:50px 8% 50px 0}.project-rail__copy h3{font-size:clamp(46px,5vw,86px);font-weight:400;letter-spacing:-.075em;line-height:.97;margin:16px 0 22px;max-width:9ch}.project-rail__copy>p:not(.eyebrow){font-size:14px;line-height:1.75;color:var(--muted);max-width:43ch}.project-rail__copy .action{margin-top:24px}
+.project-rail__bottom button{border:0;background:none;color:#ddd6e2;font:9px var(--mono);letter-spacing:.14em;padding:10px;cursor:pointer}.project-rail__bottom button:hover{color:#bda4dd}
+.project-rail__track{display:flex;gap:7px;align-items:center}.project-rail__track button{width:28px;height:3px;padding:0;background:#414047}.project-rail__track button.is-current{background:#bba2dc;height:5px}
+
+/* Mission stations are navigation, with an active dossier beside the route. */
+.mission-path{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,42%);min-height:670px;padding:55px 5%;gap:5%;background:radial-gradient(ellipse at 30% 50%,#15121b,#090a0c 63%)}
+.mission-path__line{position:absolute;left:calc(5% + 10px);top:70px;bottom:70px;width:1px;background:linear-gradient(#a18acb,#51465d 60%,#29252f)}
+.mission-path__stations{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:9px}
+.mission-path__station{position:relative;text-align:left;border:0;background:transparent;color:#7d7981;padding:6px 8px 6px 44px;min-height:58px;cursor:pointer;transition:color .3s,transform .3s}.mission-path__station:hover,.mission-path__station:focus-visible,.mission-path__station.is-active{color:#f0ebef;transform:translateX(8px)}
+.mission-path__station small{display:block;font:9px var(--mono);letter-spacing:.1em;color:#91869d}.mission-path__station strong{font-size:clamp(18px,2vw,31px);font-weight:400;letter-spacing:-.05em}
+.mission-path__node{position:absolute;left:3px;top:50%;width:14px;height:14px;transform:translateY(-50%);border:1px solid #655971;background:#111017;transition:box-shadow .3s,background .3s}.mission-path__station.is-active .mission-path__node{background:#c3b4d6;box-shadow:0 0 22px #ab8acc}
+.mission-path__focus{align-self:center;border-left:1px solid #463c4e;padding:20px 0 20px 10%;animation:railResolve .4s both}.mission-path__focus h3{font-size:clamp(43px,4.5vw,76px);line-height:1;letter-spacing:-.075em;font-weight:400;margin:22px 0}.mission-path__focus p{font-size:15px;line-height:1.7;color:var(--muted);max-width:34ch}.mission-path__layers{border-top:1px solid #3b3740;margin:30px 0;padding-top:16px;display:grid;gap:10px;font:9px/1.7 var(--mono);letter-spacing:.1em;color:#99909f}
+
+/* A release rack can remain empty without suggesting imaginary products. */
+.ecosystem-rack{display:grid;grid-template-columns:24% 1fr;min-height:540px;background:linear-gradient(100deg,#18151d,#090a0c 48%)}
+.ecosystem-rack__spine{border-right:1px solid #353039;padding:35px;display:flex;flex-direction:column;justify-content:space-between}.ecosystem-rack__spine span{font-size:clamp(26px,3vw,47px);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:-.06em}.ecosystem-rack__spine small{font:9px var(--mono);line-height:1.7;letter-spacing:.13em;color:#a18acb}
+.ecosystem-rack__slots{display:grid;grid-template-rows:repeat(5,1fr)}
+.ecosystem-rack__slot{display:grid;grid-template-columns:120px 1fr minmax(180px,32%) 26px;align-items:center;gap:20px;padding:16px 28px;border-bottom:1px solid #2c2a30;transition:background .25s,padding .25s}
+.ecosystem-rack__slot:last-child{border:0}.ecosystem-rack__slot:hover,.ecosystem-rack__slot:focus-visible{background:#19141e;padding-left:40px}
+.ecosystem-rack__slot>span{font:9px var(--mono);letter-spacing:.12em;color:#9785a7}.ecosystem-rack__slot strong{font-size:clamp(24px,3vw,45px);font-weight:400;letter-spacing:-.06em;color:var(--text)}.ecosystem-rack__slot i{font-size:24px;color:#ad95c9;font-style:normal}
+
+/* Web systems use a blueprint rather than a capability card grid. */
+.system-blueprint{min-height:600px;padding:28px;background:radial-gradient(circle at 58% 48%,#15111c,#090a0c 60%)}
+.system-blueprint__head{display:flex;justify-content:space-between;border-bottom:1px solid #39323e;padding-bottom:20px}.system-blueprint__head .mono{font-size:9px;color:#94899d}
+.system-blueprint__body{display:grid;grid-template-columns:30% 70%;min-height:450px}.system-blueprint__systems{display:flex;flex-direction:column;justify-content:center;gap:4px;border-right:1px solid #39323e}.system-blueprint__systems button{text-align:left;background:none;border:0;border-left:2px solid transparent;padding:12px 14px;color:#77737d;font-size:17px;cursor:pointer}.system-blueprint__systems button small{display:block;font:8px var(--mono);letter-spacing:.1em;margin-bottom:4px}.system-blueprint__systems button.is-active,.system-blueprint__systems button:hover{color:#eee9f0;border-left-color:#b39acb;background:#ffffff08}
+.system-blueprint__diagram{position:relative;min-height:450px}.system-blueprint__diagram svg{position:absolute;inset:0;width:100%;height:100%}.system-blueprint__diagram path{stroke:#786785;stroke-width:1;fill:none;stroke-dasharray:2 5}.system-blueprint__origin{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:140px;height:140px;border:1px solid #897398;background:#131018;display:grid;place-items:center;text-align:center;font-size:24px;letter-spacing:-.06em;padding:12px}
+.system-blueprint__node{position:absolute;padding:9px 11px;background:#101015;border:1px solid #504656;font:9px var(--mono);letter-spacing:.1em;color:#d3cbd6;white-space:nowrap}.system-blueprint__node--0{left:10%;top:14%}.system-blueprint__node--1{right:8%;top:14%}.system-blueprint__node--2{left:7%;bottom:12%}.system-blueprint__node--3{right:7%;bottom:12%}.system-blueprint__node--4{left:43%;top:4%}
+.system-blueprint__foot{border-top:1px solid #39323e;display:flex;align-items:center;justify-content:space-between;gap:25px;padding-top:22px}.system-blueprint__foot p{font-size:12px;line-height:1.6;color:var(--muted);max-width:70ch}
+
+/* Growth and Creative retain different geometry under the shared motion field. */
+.signal-field{min-height:620px;display:grid;grid-template-columns:38% 1fr;background:radial-gradient(ellipse at 31% 50%,#17111e,#090a0c 60%)}
+.signal-field__core{position:absolute;left:20%;top:50%;transform:translate(-50%,-50%);width:155px;height:155px;border:1px solid #8a6f9f;display:grid;place-items:center;text-align:center;font:11px/1.5 var(--mono);letter-spacing:.1em;color:#d1c3dd;box-shadow:0 0 70px #a18acb18}.signal-field__core span{position:absolute;inset:-25px;border:1px dashed #53445f;border-radius:50%}
+.signal-field__channels{grid-column:1;position:relative;display:flex;flex-direction:column;justify-content:space-around;padding:35px 0 35px 48%;z-index:2}.signal-field__channels button{background:#111017;border:1px solid #483e50;text-align:left;color:#8f8598;padding:10px 14px;cursor:pointer;min-width:185px}.signal-field__channels button::before{content:"";position:absolute;right:52%;width:10%;border-top:1px solid #5c4d69;transform:translateY(15px)}.signal-field__channels button.is-active,.signal-field__channels button:hover{color:#fff;border-color:#a18acb;box-shadow:0 0 20px #a18acb20}.signal-field__channels small{display:block;font:8px var(--mono);color:#ab96bf}.signal-field__channels strong{font-size:15px;font-weight:400}
+.signal-field__readout{grid-column:2;align-self:center;padding:50px 11%;border-left:1px solid #3a313f;animation:railResolve .4s both}.signal-field__readout h3{font-size:clamp(46px,5vw,80px);line-height:1;letter-spacing:-.075em;font-weight:400;margin:22px 0}.signal-field__readout p{color:var(--muted);font-size:14px;line-height:1.7;max-width:43ch}.signal-field__readout dl{display:grid;gap:16px;margin:27px 0}.signal-field__readout dt{font:9px var(--mono);letter-spacing:.1em;color:#a18acb}.signal-field__readout dd{margin:4px 0 0;color:#c9c2cd;font-size:12px;line-height:1.5}
+.material-lab{min-height:670px;display:grid;grid-template-columns:37% 1fr;background:linear-gradient(125deg,#131017,#090a0c 60%)}
+.material-lab__layers{position:absolute;left:1%;top:8%;width:45%;height:84%;pointer-events:none}.material-lab__layer{position:absolute;width:230px;height:280px;left:50%;top:48%;border:1px solid #746881;transform:translate(-50%,-50%) rotate(-16deg);background:linear-gradient(140deg,#ffffff10,#0000 55%);transition:transform .3s}.material-lab__layer--b{width:180px;height:320px;border-color:#99909b;transform:translate(-40%,-53%) rotate(16deg)}.material-lab__layer--c{width:140px;height:220px;border-color:#a692bb;transform:translate(-48%,-50%) rotate(39deg)}.material-lab[data-pointer-inside] .material-lab__layer--a{transform:translate(calc(-50% + var(--depth-x)*10px),calc(-50% + var(--depth-y)*9px)) rotate(-16deg)}
+.material-lab__cross{position:absolute;left:12%;bottom:4%;font:9px var(--mono);letter-spacing:.15em;color:#867b8a}
+.material-lab__index{grid-column:2;display:flex;flex-wrap:wrap;align-content:start;gap:6px;padding:45px 7% 0}.material-lab__index button{background:transparent;border:1px solid #3c3541;color:#8b828f;padding:8px 11px;font-size:11px;cursor:pointer}.material-lab__index button small{font:8px var(--mono);margin-right:8px;color:#a28cae}.material-lab__index button.is-active,.material-lab__index button:hover{color:#eee6f0;border-color:#a18acb;background:#a18acb14}
+.material-lab__focus{grid-column:2;align-self:end;padding:15px 7% 50px}.material-lab__focus h3{font-size:clamp(48px,5vw,82px);letter-spacing:-.075em;line-height:.98;font-weight:400;margin:22px 0}.material-lab__focus p{font-size:14px;line-height:1.7;color:var(--muted);max-width:46ch}.material-lab__focus .mono{display:block;margin:22px 0;font-size:9px;line-height:1.7;color:#95899d}
+
+@media(max-width:760px){
+ .pointer-nucleus{display:none}.spatial-surface{margin-top:30px}
+ .architecture-map{height:auto;min-height:0;padding:95px 18px 58px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.architecture-map__routes,.architecture-map__core{display:none}.architecture-map__zone{position:relative;left:auto;top:auto;transform:none;width:auto;min-height:95px;padding:14px}.architecture-map__zone:hover,.architecture-map__zone:focus-visible{transform:none}.architecture-map__zone strong{font-size:19px}.architecture-map__detail{display:none}.architecture-map__coordinate{top:18px;left:18px}.architecture-map__footer{bottom:16px;right:18px}
+ .project-rail{min-height:0}.project-rail__body{display:block;min-height:0}.project-rail__geometry{height:245px}.project-rail__geometry span{width:150px;height:150px}.project-rail__geometry span:nth-child(2){width:120px;height:120px}.project-rail__geometry span:nth-child(3){left:calc(50% + 94px);top:calc(50% - 82px)}.project-rail__geometry::before,.project-rail__geometry::after{width:170px}.project-rail__copy{padding:0 22px 34px}.project-rail__copy h3{font-size:clamp(43px,12vw,68px)}.project-rail__bottom{padding:15px 10px}.project-rail__track button{width:13px}
+ .mission-path{display:block;min-height:0;padding:28px 20px}.mission-path__line{display:none}.mission-path__stations{display:flex;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:15px;scroll-snap-type:x mandatory}.mission-path__station{min-width:170px;padding:12px;border:1px solid #3c3344;scroll-snap-align:start}.mission-path__station strong{font-size:18px}.mission-path__node{display:none}.mission-path__focus{border-left:0;border-top:1px solid #463c4e;padding:30px 0 0}.mission-path__focus h3{font-size:48px}
+ .ecosystem-rack{display:block;min-height:0}.ecosystem-rack__spine{border-right:0;border-bottom:1px solid #353039;padding:24px}.ecosystem-rack__spine span{writing-mode:initial;transform:none;font-size:34px}.ecosystem-rack__spine small{margin-top:10px}.ecosystem-rack__slot{grid-template-columns:1fr 24px;gap:6px;padding:20px}.ecosystem-rack__slot>span:first-child,.ecosystem-rack__slot strong,.ecosystem-rack__state{grid-column:1}.ecosystem-rack__slot i{grid-column:2;grid-row:1/4}.ecosystem-rack__slot strong{font-size:32px}
+ .system-blueprint{padding:18px}.system-blueprint__head .mono{display:none}.system-blueprint__body{display:block}.system-blueprint__systems{flex-direction:row;overflow-x:auto;border-right:0;padding:14px 0}.system-blueprint__systems button{min-width:145px;font-size:14px}.system-blueprint__diagram{min-height:330px}.system-blueprint__origin{width:90px;height:90px;font-size:17px}.system-blueprint__node{font-size:7px;padding:6px}.system-blueprint__node--0{left:0}.system-blueprint__node--1{right:0}.system-blueprint__node--2{left:0}.system-blueprint__node--3{right:0}.system-blueprint__foot{display:block}.system-blueprint__foot .action{margin-top:18px}
+ .signal-field{display:block;min-height:0}.signal-field__core{display:none}.signal-field__channels{padding:20px;display:flex;flex-direction:row;overflow-x:auto;gap:6px}.signal-field__channels button{min-width:155px}.signal-field__channels button::before{display:none}.signal-field__readout{border-left:0;border-top:1px solid #3a313f;padding:30px 22px}.signal-field__readout h3{font-size:48px}
+ .material-lab{display:block;min-height:0;padding-top:220px}.material-lab__layers{height:200px;width:100%;top:5%}.material-lab__layer{width:125px;height:150px}.material-lab__layer--b{width:105px;height:170px}.material-lab__layer--c{width:80px;height:120px}.material-lab__cross{display:none}.material-lab__index{padding:20px}.material-lab__focus{padding:20px 22px 35px}.material-lab__focus h3{font-size:48px}
+}
+@media(prefers-reduced-motion:reduce){.pointer-nucleus{display:none}.spatial-surface::before{display:none}.project-rail__body,.mission-path__focus,.signal-field__readout{animation:none}.project-rail__geometry,.material-lab__layer{transform:none!important}}
+
+.constellation.spatial-surface{margin-top:0}
+.constellation.is-departing .constellation__node:not(.is-active){opacity:.08;transform:translate(-50%,-50%) scale(.8)}
+.constellation.is-departing .constellation__node.is-active{transform:translate(-50%,-50%) scale(1.36);filter:drop-shadow(0 0 14px #b29aca)}
+.constellation__grid{transform:translate(var(--depth-px-x,0px),var(--depth-px-y,0px));transition:transform .2s}
+.material-lab[data-pointer-inside] .material-lab__layer--a{transform:translate(calc(-50% + var(--depth-px-x,0px)),calc(-50% + var(--depth-px-y,0px))) rotate(-16deg)}
+.evidence-disclosure{border:1px solid #353139;background:#0d0d10;margin-top:34px}
+.evidence-disclosure summary{cursor:pointer;padding:18px 22px;font:10px var(--mono);letter-spacing:.14em;color:#c3b1d6;list-style:none;display:flex;align-items:center;justify-content:space-between}
+.evidence-disclosure summary::after{content:"+";font-size:19px}.evidence-disclosure[open] summary::after{content:"−"}
+.evidence-disclosure summary::-webkit-details-marker{display:none}
+.evidence-disclosure>div,.evidence-disclosure>.ledger{margin:0}
+.evidence-disclosure .ledger{width:100%}
+.experiment-chamber{min-height:590px;display:grid;grid-template-columns:48% 52%;grid-template-rows:1fr auto;background:radial-gradient(circle at 22% 46%,#21182a,#0a0a0d 42%,#090a0c 75%)}
+.experiment-chamber__field{grid-column:1;grid-row:1;position:relative;min-height:470px}
+.experiment-chamber__ring{position:absolute;width:260px;height:260px;left:50%;top:50%;border:1px dashed #725783;border-radius:50%;transform:translate(-50%,-50%);animation:chamberTurn 22s linear infinite}
+.experiment-chamber__ring::before,.experiment-chamber__ring::after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:#b6a0c9;left:12%;top:12%;box-shadow:0 0 24px #a18acb}.experiment-chamber__ring::after{left:auto;top:auto;right:8%;bottom:17%;width:5px;height:5px}
+.experiment-chamber__seed{position:absolute;width:76px;height:76px;border:1px solid #a18acb;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 80px #a18acb24}
+.experiment-chamber__axis{position:absolute;width:75%;left:12.5%;top:50%;border-top:1px solid #5a4567;transform:rotate(-35deg)}
+.experiment-chamber__field small{position:absolute;bottom:24px;left:28px;font:9px var(--mono);letter-spacing:.12em;color:#8e789d}
+@keyframes chamberTurn{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.experiment-chamber__body{grid-column:2;grid-row:1;align-self:center;padding:40px 9% 40px 0}
+.experiment-chamber__body h3{font-size:clamp(48px,5vw,80px);line-height:1;letter-spacing:-.075em;font-weight:400;margin:22px 0}.experiment-chamber__body p{font-size:14px;line-height:1.7;color:var(--muted);max-width:44ch}
+.experiment-chamber__evidence{display:grid;gap:7px;border-top:1px solid #3a313f;margin:25px 0;padding-top:18px;font-size:12px;line-height:1.6;color:#b6aabb}.experiment-chamber__evidence small{font:9px var(--mono);letter-spacing:.12em;color:#a18acb}
+.experiment-chamber__selector{grid-column:1/-1;display:flex;overflow-x:auto;border-top:1px solid #39303e}
+.experiment-chamber__selector button{flex:1;min-width:150px;background:transparent;border:0;border-right:1px solid #39303e;text-align:left;padding:16px 20px;font:9px var(--mono);letter-spacing:.1em;color:#a18acb;cursor:pointer}.experiment-chamber__selector button span{display:block;color:#c7c0c9;font:14px sans-serif;letter-spacing:0;margin-top:5px}.experiment-chamber__selector button.is-active{background:#a18acb17}
+@media(max-width:760px){.experiment-chamber{display:block;min-height:0}.experiment-chamber__field{min-height:250px}.experiment-chamber__ring{width:160px;height:160px}.experiment-chamber__body{padding:20px 22px 36px}.experiment-chamber__body h3{font-size:46px}}
+@media(prefers-reduced-motion:reduce){.experiment-chamber__ring{animation:none}.constellation__grid{transform:none}.constellation.is-departing .constellation__node{transform:translate(-50%,-50%)}}
+.wordpress-axes{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #3b3540;border-bottom:1px solid #3b3540;background:linear-gradient(180deg,#131017,#0b0c0e)}
+.wordpress-axes .pillar{background:transparent;border-right:1px solid #3b3540;min-height:360px;padding:30px;transition:background var(--motion-response)}
+.wordpress-axes .pillar:last-child{border-right:0}.wordpress-axes .pillar:hover{background:#a18acb0c}
+.wordpress-axes .pillar h3{font-size:clamp(28px,2.7vw,44px);letter-spacing:-.06em}
+.wordpress-axes .pillar__activities li{border:0;border-top:1px solid #3b3540;padding:6px 0;display:block;width:100%}
+.mobile-panel__search{width:100%;background:#17121d;border:1px solid #6a5876;color:#eee9f0;font:10px var(--mono);letter-spacing:.14em;padding:17px 19px;display:flex;justify-content:space-between;cursor:pointer;margin-bottom:28px}
+@media(max-width:760px){
+ .architecture-map{display:block;padding:88px 18px 54px}.architecture-map__zone{min-height:72px;border:0;border-bottom:1px solid #3c3642;background:transparent;padding:14px 16px 14px 42px}.architecture-map__zone::before{content:"";position:absolute;left:14px;top:50%;width:7px;height:7px;transform:translateY(-50%);border:1px solid #a18acb;background:#17121d}.architecture-map__zone:not(:last-of-type)::after{content:"";position:absolute;left:17px;top:calc(50% + 4px);height:calc(100% - 8px);border-left:1px solid #51455b}.architecture-map__zone strong{font-size:22px}.architecture-map__zone:hover,.architecture-map__zone:focus-visible{background:#a18acb0d}.architecture-map__footer{position:relative;display:block;text-align:right;right:auto;bottom:auto;margin-top:22px}
+ .constellation-wrap{display:none}
+ .wordpress-axes{display:block}.wordpress-axes .pillar{min-height:0;border-right:0;border-bottom:1px solid #3b3540;padding:26px 20px}.wordpress-axes .pillar__activities{margin-top:12px}
+ .signal-field__channels,.mission-path__stations,.system-blueprint__systems,.signal-rail__inner{scrollbar-width:none;-ms-overflow-style:none}
+ .signal-field__channels::-webkit-scrollbar,.mission-path__stations::-webkit-scrollbar,.system-blueprint__systems::-webkit-scrollbar,.signal-rail__inner::-webkit-scrollbar{display:none}
+}
 .universe-foot { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-top: 1px solid var(--line); padding-top: 22px; margin-top: 30px; font-size: 9px; letter-spacing: 0.14em; color: var(--dim); font-family: var(--mono); }
 .universe-foot a { color: var(--violet); transition: color 180ms; }
 .universe-foot a:hover { color: var(--text); }

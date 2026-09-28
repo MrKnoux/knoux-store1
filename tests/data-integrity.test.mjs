@@ -72,9 +72,6 @@ const FORBIDDEN_PROMISES = [
   /\bno risk\b/i,
 ];
 
-/** A disclaimer has to actually disclaim. */
-const NEGATORS = /\b(no|not|never|without|avoid|omits?|claims? no|refus\w+|instead of)\b/i;
-
 function sourceFiles(dir) {
   return readdirSync(dir, { withFileTypes: true })
     .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name))
@@ -148,8 +145,9 @@ test('external and client repositories are excluded from the public catalogue', 
 
 test('every published software product cites repository evidence', () => {
   const text = readFileSync(join(dataDir, 'software.ts'), 'utf8');
-  const blocks = text.split(/^  \{\n/m).slice(1);
-  assert.ok(blocks.length >= 8, 'the universe must publish the audited products');
+  const blocks = text.split(/^  \{\r?\n/m).slice(1);
+  assert.ok(blocks.length >= 7, 'the universe must publish the audited canonical products');
+  assert.ok(!text.slice(0, text.indexOf('export const repositoryLedger')).includes("id: 'sw-crypt'"), 'research concepts belong in Labs');
   for (const block of blocks) {
     if (!block.includes("code: 'SW-")) continue;
     assert.match(block, /evidence: \[/, 'every product must carry an evidence list');
@@ -188,7 +186,7 @@ test('the entity model is the single discovery contract', () => {
 test('every division referenced by the index is a real division', () => {
   const entities = readFileSync(join(libDir, 'entities.ts'), 'utf8');
   const declared = new Set(
-    [...entities.matchAll(/id: '([a-z]+)',\n    label:/g)].map((match) => match[1]),
+    [...entities.matchAll(/id: '([a-z]+)',\r?\n    label:/g)].map((match) => match[1]),
   );
   assert.ok(declared.size >= 8, 'at least eight divisions must be declared');
   for (const id of declared) {

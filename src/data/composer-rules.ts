@@ -16,7 +16,7 @@ import { softwareEntities } from '@/data/software';
 
 export const routeEntities: DiscoverableEntity[] = [
   { id: 'route-home', kind: 'route', division: 'institution', code: 'RT', slug: 'home', name: 'Headquarters', shortName: 'Home', summary: 'The KNOuX digital headquarters.', status: 'active', route: '/', categories: ['headquarters'], searchTerms: ['home', 'start', 'knoux', 'headquarters', 'main page'], capabilities: [], relatedIds: [] },
-  { id: 'route-labs', kind: 'route', division: 'labs', code: 'RT', slug: 'labs', name: 'Labs', shortName: 'Labs', summary: 'Research, experiments and unfinished systems.', status: 'active', route: '/labs', categories: ['institution'], searchTerms: ['labs', 'research', 'experiments', 'prototype', 'wip'], capabilities: [], relatedIds: ['sw-crypt', 'lab-quill'] },
+  { id: 'route-labs', kind: 'route', division: 'labs', code: 'RT', slug: 'labs', name: 'Labs', shortName: 'Labs', summary: 'Research, experiments and unfinished systems.', status: 'active', route: '/labs', categories: ['institution'], searchTerms: ['labs', 'research', 'experiments', 'prototype', 'wip'], capabilities: [], relatedIds: [] },
   { id: 'route-work', kind: 'route', division: 'institution', code: 'RT', slug: 'work', name: 'Work', shortName: 'Work', summary: 'Verified project records. Currently empty by evidence.', status: 'active', route: '/work', categories: ['institution'], searchTerms: ['work', 'case study', 'projects', 'portfolio', 'clients'], capabilities: [], relatedIds: [] },
   { id: 'route-engineering', kind: 'route', division: 'institution', code: 'RT', slug: 'engineering', name: 'Engineering', shortName: 'Engineering', summary: 'How KNOuX works from interface to delivery.', status: 'active', route: '/engineering', categories: ['institution'], searchTerms: ['engineering', 'process', 'method', 'practice', 'how you work'], capabilities: [], relatedIds: [] },
   { id: 'route-about', kind: 'route', division: 'institution', code: 'RT', slug: 'about', name: 'About', shortName: 'About', summary: 'The institution.', status: 'active', route: '/about', categories: ['institution'], searchTerms: ['about', 'who is knoux', 'institution', 'company'], capabilities: [], relatedIds: [] },
@@ -121,7 +121,7 @@ export const composerRules: readonly ComposerRule[] = [
   { match: ['build a store', 'open a store', 'sell products'], entityIds: ['sol-online-store'], reason: 'Online store' },
   { match: ['automate', 'streamline operations', 'replace spreadsheets', 'digitise', 'digitize'], entityIds: ['sol-operations'], reason: 'Operations systems' },
   { match: ['customer portal', 'client portal', 'self service'], entityIds: ['sol-portal'], reason: 'Customer portal' },
-  { match: ['academy', 'courses', 'online school', 'training platform', 'lms', 'teach online'], entityIds: ['sol-build-an-academy-platform'], reason: 'Academy platform' },
+  { match: ['academy', 'courses', 'online school', 'training platform', 'lms', 'teach online'], entityIds: ['sol-academy'], reason: 'Academy platform' },
   { match: ['redesign', 'rebuild', 'modernise', 'modernize', 'outdated website', 'old website'], entityIds: ['sol-modernise'], reason: 'Modernising an existing site' },
 ];
 
@@ -168,11 +168,17 @@ export function evaluateComposer(rawInput: string): ComposerResult {
   const normalised = normalise(rawInput);
   const matches: ComposerMatch[] = [];
   const seenPhrases = new Set<string>();
+  const specificWebIntent = /\b(ecommerce|e commerce|online store|shop|storefront|portal|academy|booking|appointment|dashboard|web app)\b/.test(normalised);
+  const specificPaidIntent = /\b(google ads|meta ads|facebook ads|instagram ads|paid search|paid social|adwords)\b/.test(normalised);
 
   for (const rule of rulesByPhrase) {
     for (const phrase of rule.match) {
       if (seenPhrases.has(phrase)) continue;
-      if (!normalised.includes(phrase)) continue;
+      const term = normalise(phrase);
+      if (!term || !new RegExp(`(?:^|\\s)${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|\\s)`).test(normalised)) continue;
+      // A named system or channel is more useful than an additional generic one.
+      if (specificWebIntent && ['website', 'web site', 'site', 'business website'].includes(phrase)) continue;
+      if (specificPaidIntent && ['ads', 'advertising', 'campaign'].includes(phrase)) continue;
       // Skip a phrase that is entirely stop words unless it is a real phrase.
       if (STOP_WORDS.has(phrase) && !rule.entityIds.length) continue;
       seenPhrases.add(phrase);
@@ -182,14 +188,15 @@ export function evaluateComposer(rawInput: string): ComposerResult {
 
   matches.sort((a, b) => b.phrase.length - a.phrase.length);
 
-  // Capability resolution: words that name a capability earn a lower-priority
-  // match, so "restaurant website" still surfaces the web system.
+  // Capability resolution is a fallback for language with no explicit intent
+  // phrase. It never expands a precise request into unrelated disciplines.
   const capabilityIds: string[] = [];
-  for (const token of normalised.split(' ')) {
-    if (token.length < 3) continue;
-    for (const capability of capabilities) {
-      if (capability.label.toLowerCase().includes(token) || capability.searchTerms.some((term) => term.includes(token))) {
-        if (!capabilityIds.includes(capability.id)) capabilityIds.push(capability.id);
+  if (matches.length === 0) {
+    for (const token of normalised.split(' ')) {
+      if (token.length < 4 || STOP_WORDS.has(token)) continue;
+      for (const capability of capabilities) {
+        const terms = [capability.label, ...capability.searchTerms].flatMap((entry) => normalise(entry).split(' '));
+        if (terms.includes(token) && !capabilityIds.includes(capability.id)) capabilityIds.push(capability.id);
       }
     }
   }

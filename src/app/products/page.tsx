@@ -7,6 +7,7 @@ import { SignalRail } from '@/components/DivisionShell';
 import { pageMetadata } from '@/lib/metadata';
 import { softwareAuditDate, softwareAuditOwner, softwareProducts } from '@/data/software';
 import { divisions } from '@/lib/entities';
+import { ProjectRail } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Software Universe',
@@ -31,6 +32,11 @@ export default function ProductsPage() {
       <Suspense fallback={<div className="shell" style={{ minHeight: 620 }} />}>
         <ProductUniverse />
       </Suspense>
+
+      <section className="shell" style={{ paddingTop: 'clamp(70px, 8vw, 130px)' }}>
+        <div className="block-head"><div><span className="label label--signal">FEATURED ARCHIVE</span><h2 className="block-head__title">One system<br />at a time.</h2></div><p className="block-head__aside">Move through the same verified registry as the topology. Each system opens into its evidence backed dossier.</p></div>
+        <ProjectRail />
+      </section>
 
       <RevealGroup>
         <SystemIndex
@@ -71,7 +77,7 @@ export default function ProductsPage() {
             as products. Repositories that are not KNOuX-branded are outside this catalogue and are not listed.
           </p>
         </div>
-        <RepositoryLedger />
+        <details className="evidence-disclosure"><summary>VIEW SYSTEM LEDGER</summary><RepositoryLedger /></details>
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>

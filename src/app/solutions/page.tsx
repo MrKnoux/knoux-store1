@@ -5,6 +5,7 @@ import { DivisionBridge, NextLink, RevealGroup, SystemIndex, IndexRow } from '@/
 import { pageMetadata } from '@/lib/metadata';
 import { solutionGroups, solutions } from '@/data/solutions';
 import { TrackOnView } from '@/components/TrackOnView';
+import { MissionPath } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Solutions',
@@ -25,7 +26,12 @@ export default function SolutionsPage() {
       />
       <SignalRail division="solutions" path="/solutions" />
 
-      {solutionGroups.map((group) => {
+      <section className="shell" style={{ paddingTop: 'clamp(70px, 8vw, 130px)', paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
+        <div className="block-head"><div><span className="label label--signal">MISSION NAVIGATION</span><h2 className="block-head__title">Follow the need.</h2></div><p className="block-head__aside">Move through real business objectives. Each station resolves into documented systems and services.</p></div>
+        <MissionPath />
+      </section>
+
+      <details className="evidence-disclosure shell"><summary>VIEW SOLUTION INDEX</summary>{solutionGroups.map((group) => {
         const items = solutions.filter((solution) => solution.group === group.id);
         if (items.length === 0) return null;
         return (
@@ -50,7 +56,7 @@ export default function SolutionsPage() {
             </SystemIndex>
           </RevealGroup>
         );
-      })}
+      })}</details>
 
       <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <div className="dev-state" data-reveal>

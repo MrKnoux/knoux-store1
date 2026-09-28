@@ -195,7 +195,7 @@ export const solutions: readonly Solution[] = [
       },
       {
         label: 'Hosting and upkeep',
-        entityIds: ['wordpress-maintenance', 'wordpress-performance', 'wp-svc-backup'],
+        entityIds: ['wordpress-maintenance', 'wp-svc-performance', 'wp-svc-backup'],
         because: 'A store that nobody maintains is an availability risk with a brand attached.',
       },
     ],

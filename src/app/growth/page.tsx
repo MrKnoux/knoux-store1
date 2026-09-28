@@ -5,6 +5,7 @@ import { BudgetScope, GrowthFlow } from '@/components/GrowthFlow';
 import { pageMetadata } from '@/lib/metadata';
 import { growthChannelsDetail, growthModules } from '@/data/growth';
 import { TrackOnView } from '@/components/TrackOnView';
+import { SignalField } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Growth',
@@ -24,6 +25,8 @@ export default function GrowthPage() {
         description="Campaign architecture, measurement and content. No target metrics, minimum spends or return claims appear on this site, because none of those are knowable before a scope is agreed."
       />
       <SignalRail division="growth" path="/growth" />
+
+      <section className="shell" style={{ paddingTop: 'clamp(60px, 7vw, 120px)' }}><SignalField /></section>
 
       <section className="shell" id="flow" style={{ paddingTop: 'clamp(56px, 7vw, 110px)', paddingBottom: 'clamp(70px, 8vw, 130px)', scrollMarginTop: 80 }}>
         <RevealGroup>
@@ -87,7 +90,7 @@ export default function GrowthPage() {
             not offered.
           </p>
         </div>
-        <div className="registry" style={{ marginTop: 34 }}>
+        <details className="evidence-disclosure"><summary>VIEW SERVICE MODULE REGISTRY</summary><div className="registry" style={{ marginTop: 34 }}>
           <div className="registry-row" style={{ gridTemplateColumns: '44px minmax(0,1fr) minmax(0,1.2fr) 90px', borderBottomColor: '#3d3e43' }}>
             <span className="registry-row__id">ID</span>
             <span className="registry-row__name">Module</span>
@@ -105,7 +108,7 @@ export default function GrowthPage() {
               <span className="registry-row__compat">{module.setup ? 'SETUP' : 'ONGOING'}</span>
             </div>
           ))}
-        </div>
+        </div></details>
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>

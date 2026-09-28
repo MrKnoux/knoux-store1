@@ -5,6 +5,7 @@ import { WordPressGoalIndex } from '@/components/WordPressCatalog';
 import { pageMetadata } from '@/lib/metadata';
 import { wordPressItems, wordpressPillars, wordPressServices } from '@/data/wordpress';
 import { TrackOnView } from '@/components/TrackOnView';
+import { EcosystemRack } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'WordPress Ecosystem',
@@ -43,7 +44,7 @@ export default function WordPressPage() {
             </p>
           </div>
         </RevealGroup>
-        <div className="pillars" style={{ marginTop: 40 }}>
+        <div className="wordpress-axes" style={{ marginTop: 40 }}>
           {wordpressPillars.map((pillar) => (
             <div key={pillar.id} className="pillar" data-reveal>
               <span className="pillar__index">{pillar.index}</span>
@@ -85,27 +86,7 @@ export default function WordPressPage() {
           </p>
         </div>
 
-        <div className="index-rows" style={{ marginTop: 40 }}>
-          {[
-            { code: 'WP-01', name: 'Themes', meta: 'Full site editing systems for editorial control.', href: '/wordpress/themes' },
-            { code: 'WP-02', name: 'Plugins', meta: 'Extensions that add a capability or an integration.', href: '/wordpress/plugins' },
-            { code: 'WP-03', name: 'Blocks', meta: 'Reusable Gutenberg components for technical layouts.', href: '/wordpress/blocks' },
-            { code: 'WP-04', name: 'Starter Sites', meta: 'Pre-architected foundations by business vertical.', href: '/wordpress/starter-sites' },
-            { code: 'WP-05', name: 'Bundles', meta: 'Software, extensions and operating work per outcome.', href: '/wordpress/solutions' },
-          ].map((entry) => (
-            <a key={entry.href} className="index-row" href={entry.href}>
-              <span className="index-row__index">{entry.code}</span>
-              <span className="index-row__name">{entry.name}</span>
-              <span className="index-row__meta">
-                <span>{entry.meta}</span>
-                <span className="mono">0 PUBLISHED</span>
-              </span>
-              <span className="index-row__arrow" aria-hidden="true">
-                ↗
-              </span>
-            </a>
-          ))}
-        </div>
+        <EcosystemRack />
       </section>
 
       {/* Operating services */}
@@ -124,7 +105,7 @@ export default function WordPressPage() {
             no duration; scope is agreed in conversation.
           </p>
         </div>
-        <div className="index-rows" style={{ marginTop: 40 }}>
+        <details className="evidence-disclosure"><summary>VIEW OPERATING SERVICE INDEX</summary><div className="index-rows" style={{ marginTop: 40 }}>
           {wordPressServices.map((service) => (
             <div key={service.id} className="index-row">
               <span className="index-row__index">{service.code}</span>
@@ -138,7 +119,7 @@ export default function WordPressPage() {
               </span>
             </div>
           ))}
-        </div>
+        </div></details>
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(80px, 9vw, 150px)' }}>

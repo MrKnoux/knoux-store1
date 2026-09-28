@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { NextResponse as Response } from 'next/server';
 
 /**
  * Request intake.
@@ -44,14 +43,6 @@ function cleanText(value: unknown, max: number): string {
 }
 
 export async function POST(request: Request) {
-  const webhook = process.env.CONTACT_WEBHOOK_URL;
-  if (!webhook) {
-    return Response.json(
-      { error: 'Request delivery is not configured on this deployment.', delivered: false },
-      { status: 503 },
-    );
-  }
-
   let data: unknown;
   try {
     data = await request.json();
@@ -92,6 +83,14 @@ export async function POST(request: Request) {
     payload.message.length > 4000
   ) {
     return NextResponse.json({ error: 'Request fields are invalid.', delivered: false }, { status: 422 });
+  }
+
+  const webhook = process.env.CONTACT_WEBHOOK_URL;
+  if (!webhook) {
+    return NextResponse.json(
+      { error: 'Request delivery is not configured on this deployment.', delivered: false },
+      { status: 503 },
+    );
   }
 
   try {

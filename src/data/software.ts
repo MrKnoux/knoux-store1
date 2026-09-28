@@ -405,39 +405,6 @@ export const softwareProducts: readonly SoftwareProduct[] = [
     relatedIds: ['sw-organizer', 'sw-forge'],
     topology: { orbit: 2, angleDeg: 270 },
   },
-  {
-    id: 'sw-crypt',
-    code: 'SW-08',
-    slug: 'knoux-crypt',
-    name: 'KNOuX Crypt',
-    shortName: 'Crypt',
-    index: '08',
-    family: 'Security',
-    discipline: 'Security',
-    status: 'research',
-    tagline: 'Local disk and file encryption concept',
-    statement:
-      'An early encryption concept kept in Labs. Its repository is a design document rather than a verified build, so it carries no compatibility, algorithm or platform claims on this site beyond what the document itself states as intent.',
-    license: 'Not declared',
-    repository: 'https://github.com/daynightae-cmyk/KnouxCrypt',
-    platform: 'Not established by the repository',
-    capabilities: [
-      'A stated intent to work fully offline with no data transmission',
-      'A stated intent to integrate DiskCryptor or VeraCrypt SDKs behind a local core module',
-      'A stated intent for Arabic and English interface support',
-    ],
-    limitations: [
-      'The repository contains a design document, not a release, and states no verified version, platform support or test evidence',
-      'Nothing in this repository is presented here as a shipped encryption product',
-    ],
-    technologies: ['Concept document only'],
-    searchTerms: ['encryption concept', 'disk encryption research', 'offline encryption idea', 'security research'],
-    evidence: [
-      { source: 'README.md', note: 'Arabic design document describing intended features, stack and project structure' },
-    ],
-    relatedIds: ['sw-one', 'sw-clipboard'],
-    topology: { orbit: 3, angleDeg: 205 },
-  },
 ];
 
 /**

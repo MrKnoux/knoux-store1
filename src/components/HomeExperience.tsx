@@ -4,10 +4,9 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { softwareProducts } from '@/data/software';
-import { divisions } from '@/lib/entities';
-import { solutions } from '@/data/solutions';
 import { QualityControl } from '@/components/QualityControl';
 import { RevealGroup } from '@/components/blocks';
+import { ArchitecturalMap, MissionPath, ProjectRail } from '@/components/SpatialExperiences';
 
 const LivingParticleMark = dynamic(
   () => import('@/components/three/LivingParticleMark').then((m) => m.LivingParticleMark),
@@ -93,16 +92,7 @@ export function HomeExperience() {
             model, one motion grammar, one search and one request architecture.
           </p>
         </div>
-        <div className="pillars" style={{ marginTop: 44 }}>
-          {divisions.map((division) => (
-            <Link key={division.id} href={division.route} className="pillar">
-              <span className="pillar__index">{division.index}</span>
-              <h3>{division.label}</h3>
-              <p>{division.statement}</p>
-              <span className="pillar__link">ENTER ↗</span>
-            </Link>
-          ))}
-        </div>
+        <ArchitecturalMap />
       </section>
 
       {/* 02 — Software */}
@@ -122,18 +112,7 @@ export function HomeExperience() {
               capabilities its repository states and the limits its maintainers documented.
             </p>
           </div>
-          <div className="featured-list" style={{ marginTop: 40 }}>
-            {softwareProducts.map((product) => (
-              <Link href={`/products/${product.slug}`} className="featured-row" key={product.id}>
-                <span className="row-index">{product.code}</span>
-                <span className="row-title">{product.name}</span>
-                <span className="row-kind">{product.family}</span>
-                <span className="row-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </Link>
-            ))}
-          </div>
+          <ProjectRail />
           <div className="universe-foot">
             <span>{String(softwareProducts.length).padStart(2, '0')} VERIFIED SYSTEMS / ONE ENGINEERING PRACTICE</span>
             <Link href="/products">OPEN THE UNIVERSE ↗</Link>
@@ -158,23 +137,7 @@ export function HomeExperience() {
               same registries the divisions publish.
             </p>
           </div>
-          <div className="index-rows" style={{ marginTop: 40 }}>
-            {solutions.map((solution) => (
-              <Link key={solution.id} href={`/solutions/${solution.slug}`} className="index-row">
-                <span className="index-row__index">{solution.code}</span>
-                <span className="index-row__name">{solution.title}</span>
-                <span className="index-row__meta">
-                  <span>{solution.objective}</span>
-                  <span className="mono">
-                    {solution.core.length} CORE / {solution.optional.length} OPTIONAL
-                  </span>
-                </span>
-                <span className="index-row__arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </Link>
-            ))}
-          </div>
+          <MissionPath />
         </section>
       </RevealGroup>
 

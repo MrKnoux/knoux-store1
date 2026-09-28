@@ -5,6 +5,7 @@ import { CapabilityMatrix, SystemsStudio } from '@/components/WebSystems';
 import { pageMetadata } from '@/lib/metadata';
 import { engineeringStages, webSystemCategories, webSystems } from '@/data/services';
 import { TrackOnView } from '@/components/TrackOnView';
+import { SystemBlueprint } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Web Engineering',
@@ -24,6 +25,8 @@ export default function WebPage() {
         description="KNOuX web engineering is organised by what the system has to do. No prices, no delivery windows, no client counts — those are agreed per project, not published as claims."
       />
       <SignalRail division="web" path="/web" />
+
+      <section className="shell" style={{ paddingTop: 'clamp(60px, 7vw, 120px)' }}><SystemBlueprint /></section>
 
       <section className="shell" id="systems" style={{ paddingTop: 'clamp(60px, 7vw, 120px)', paddingBottom: 'clamp(80px, 9vw, 150px)', scrollMarginTop: 80 }}>
         <RevealGroup>
@@ -62,9 +65,9 @@ export default function WebPage() {
             delivered either way, and the choice is a scoping decision rather than a sales one.
           </p>
         </div>
-        <div style={{ marginTop: 34 }}>
+        <details className="evidence-disclosure"><summary>VIEW CAPABILITY MATRIX</summary><div style={{ marginTop: 34 }}>
           <CapabilityMatrix />
-        </div>
+        </div></details>
       </section>
 
       <RevealGroup>

@@ -3,6 +3,7 @@ import { DivisionBridge, NextLink } from '@/components/blocks';
 import { pageMetadata } from '@/lib/metadata';
 import { labExperiments, repositoryLedger, softwareProducts } from '@/data/software';
 import { TrackOnView } from '@/components/TrackOnView';
+import { ExperimentChamber } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Labs',
@@ -42,7 +43,8 @@ export default function LabsPage() {
           </p>
         </div>
 
-        <div className="index-rows" style={{ marginTop: 34 }}>
+        <ExperimentChamber />
+        <details className="evidence-disclosure"><summary>VIEW EXPERIMENT EVIDENCE</summary><div className="index-rows" style={{ marginTop: 34 }}>
           {labExperiments.map((lab) => (
             <article key={lab.id} className="lab-row">
               <span className="lab-row__code">{lab.code}</span>
@@ -69,7 +71,7 @@ export default function LabsPage() {
               </a>
             </article>
           ))}
-        </div>
+        </div></details>
       </section>
 
       <section className="shell" style={{ paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
@@ -87,7 +89,7 @@ export default function LabsPage() {
             are empty. Publishing them would imply a release that does not exist.
           </p>
         </div>
-        <div className="registry" style={{ marginTop: 30 }}>
+        <details className="evidence-disclosure"><summary>VIEW UNPUBLISHED REPOSITORIES</summary><div className="registry" style={{ marginTop: 30 }}>
           {nonCanonical.map((record) => (
             <div key={record.repository} className="registry-row" style={{ gridTemplateColumns: 'minmax(0,1fr) 130px minmax(0,1.4fr)' }}>
               <span className="registry-row__name mono" style={{ fontSize: 12 }}>
@@ -97,7 +99,7 @@ export default function LabsPage() {
               <span className="registry-row__purpose">{record.basis}</span>
             </div>
           ))}
-        </div>
+        </div></details>
         <p className="meta-row" style={{ marginTop: 22 }}>
           <span>{softwareProducts.length} canonical products</span>
           <span>{labExperiments.length} research items</span>

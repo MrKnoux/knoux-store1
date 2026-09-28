@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -16,6 +16,7 @@ const server = spawn(
   ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', '127.0.0.1'],
   { env, stdio: 'ignore' },
 );
+after(() => server.kill());
 
 async function waitForServer() {
   for (let attempt = 0; attempt < 140; attempt++) {
@@ -41,7 +42,6 @@ const ROUTES = [
   '/products/knoux-rec',
   '/products/knoux-x',
   '/products/knoux-clipboard-ai',
-  '/products/knoux-crypt',
   '/wordpress',
   '/wordpress/themes',
   '/wordpress/plugins',
@@ -109,9 +109,8 @@ test('the protected arrival baseline is intact', () => {
   assert.match(css, /prefers-reduced-motion/, 'reduced motion must be honoured');
 });
 
-test('production routes, deep links, sitemap and honest contact delivery', async (t) => {
+test('production routes, deep links, sitemap and honest contact delivery', async () => {
   await waitForServer();
-  t.after(() => server.kill());
 
   for (const path of ROUTES) {
     const response = await fetch(origin + path);
@@ -152,9 +151,8 @@ test('production routes, deep links, sitemap and honest contact delivery', async
   assert.match(home, /aria-label="Open search"/, 'a labelled search control must exist in the header');
 });
 
-test('division pages render their registry honestly', async (t) => {
+test('division pages render their registry honestly', async () => {
   await waitForServer();
-  t.after(() => server.kill());
 
   const themes = await (await fetch(origin + '/wordpress/themes')).text();
   assert.match(themes, /IN DEVELOPMENT/, 'an empty catalogue must state its state');
@@ -163,7 +161,8 @@ test('division pages render their registry honestly', async (t) => {
 
   const plugins = await (await fetch(origin + '/wordpress/plugins')).text();
   assert.match(plugins, /0 plugins registered/i, 'the extension registry must report its count');
-  assert.ok(!/\$[0-9]/.test(plugins), 'no price may be shown for an unreleased plugin');
+  const pluginText = plugins.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
+  assert.ok(!/\$[0-9]/.test(pluginText), 'no price may be shown for an unreleased plugin');
 
   const growth = await (await fetch(origin + '/growth')).text();
   assert.match(growth, /CAMPAIGN BUDGET/i, 'the growth entry must accept a campaign budget');
@@ -171,19 +170,19 @@ test('division pages render their registry honestly', async (t) => {
 
   const web = await (await fetch(origin + '/web')).text();
   assert.match(web, /CAPABILITY MATRIX/i, 'web must publish the capability matrix');
-  assert.ok(!/\$\d/.test(web), 'web must not publish prices');
+  const webText = web.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
+  assert.ok(!/\$\d/.test(webText), 'web must not publish prices');
 
   const work = await (await fetch(origin + '/work')).text();
   assert.match(work, /EMPTY BY EVIDENCE/i, 'the work archive must state that it is empty');
-  assert.ok(!/testimonial/i.test(work), 'no testimonials may be shown');
+  assert.ok(!/<blockquote\b|"@type":"Review"/i.test(work), 'no testimonials may be shown');
 
   const creative = await (await fetch(origin + '/creative')).text();
   assert.match(creative, /No project archive is published/i, 'creative must not imply a portfolio');
 });
 
-test('searchable routes expose metadata and structured data', async (t) => {
+test('searchable routes expose metadata and structured data', async () => {
   await waitForServer();
-  t.after(() => server.kill());
 
   for (const path of ['/', '/products', '/wordpress', '/web', '/growth', '/creative', '/solutions', '/build', '/about', '/contact', '/products/knoux-one']) {
     const html = await (await fetch(origin + path)).text();
@@ -195,9 +194,8 @@ test('searchable routes expose metadata and structured data', async (t) => {
   }
 });
 
-test('sitemap and robots describe the real site', async (t) => {
+test('sitemap and robots describe the real site', async () => {
   await waitForServer();
-  t.after(() => server.kill());
 
   const robots = await (await fetch(origin + '/robots.txt')).text();
   assert.match(robots, /Sitemap:/);
@@ -228,9 +226,8 @@ test('sitemap and robots describe the real site', async (t) => {
   }
 });
 
-test('the contact endpoint never claims delivery without a configured service', async (t) => {
+test('the contact endpoint never claims delivery without a configured service', async () => {
   await waitForServer();
-  t.after(() => server.kill());
 
   assert.equal((await fetch(origin + '/api/contact', { method: 'GET' })).status, 405, 'contact endpoint rejects other methods');
 

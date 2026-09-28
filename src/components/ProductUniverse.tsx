@@ -55,6 +55,7 @@ export function ProductUniverse() {
   const [query, setQuery] = useState(queryParam);
   const [family, setFamily] = useState<string>('all');
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [departingId, setDepartingId] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -210,7 +211,7 @@ export function ProductUniverse() {
       {/* Constellation */}
       {!filtered ? (
         <div className="constellation-wrap" style={{ marginTop: 34 }}>
-          <div className="constellation">
+          <div className={`constellation spatial-surface ${departingId ? 'is-departing' : ''}`} data-spatial>
             <div className="constellation__grid" aria-hidden="true">
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="presentation">
                 {[12, 24, 36, 47, 58].map((r) => (
@@ -290,7 +291,13 @@ export function ProductUniverse() {
                     track({ type: 'product_node_focused', id: product.id, method: 'keyboard' });
                   }}
                   onBlur={() => setActiveId(null)}
-                  onClick={() => track({ type: 'product_opened', id: product.id, slug: product.slug })}
+                  onClick={(event) => {
+                    track({ type: 'product_opened', id: product.id, slug: product.slug });
+                    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    setDepartingId(product.id);
+                    window.setTimeout(() => router.push(`/products/${product.slug}`), 240);
+                  }}
                 >
                   <span className="constellation__node-dot" aria-hidden="true" />
                   <span className="constellation__node-code">{product.code}</span>
@@ -334,7 +341,7 @@ export function ProductUniverse() {
               <div className="constellation__idle">
                 <span className="label label--signal">SYSTEM TOPOLOGY</span>
                 <p>
-                  Eight systems connected to one practice. Move across a node to read its registration, or open
+                  Seven verified systems connected to one practice. Move across a node to read its registration, or open
                   it for the full dossier.
                 </p>
                 <p className="mono" style={{ fontSize: 10, color: '#6d6e70' }}>

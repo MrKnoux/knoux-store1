@@ -6,6 +6,7 @@ import { DevState } from '@/components/DivisionShell';
 import { pageMetadata } from '@/lib/metadata';
 import { creativeDisciplines } from '@/data/services';
 import { TrackOnView } from '@/components/TrackOnView';
+import { MaterialLab } from '@/components/SpatialExperiences';
 
 export const metadata = pageMetadata(
   'Creative',
@@ -25,6 +26,8 @@ export default function CreativePage() {
         description="Eight capability systems rather than a gallery. Each one produces a specification somebody else can implement without asking what was meant."
       />
       <SignalRail division="creative" path="/creative" />
+
+      <section className="shell" style={{ paddingTop: 'clamp(60px, 7vw, 120px)' }}><MaterialLab /></section>
 
       <section className="shell" style={{ paddingTop: 'clamp(50px, 6vw, 100px)', paddingBottom: 'clamp(70px, 8vw, 130px)' }}>
         <nav aria-label="Creative disciplines" className="finder-chips">

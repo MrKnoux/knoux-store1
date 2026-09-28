@@ -30,11 +30,16 @@ export function SiteHeader() {
   // need to be synchronised to the pathname from an effect.
   useEffect(() => {
     if (!menu) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setMenu(false);
     };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKey);
+    };
   }, [menu]);
 
   return (
@@ -84,6 +89,10 @@ export function SiteHeader() {
 
       {menu ? (
         <nav className="mobile-panel" aria-label="Site navigation">
+          <button type="button" className="mobile-panel__search" onClick={() => {
+            setMenu(false);
+            window.setTimeout(() => window.dispatchEvent(new CustomEvent(OPEN_EVENT)), 0);
+          }}>SEARCH THE INSTITUTION <span aria-hidden="true">⌘K</span></button>
           <span className="label" style={{ marginBottom: 18 }}>
             DIVISIONS
           </span>
