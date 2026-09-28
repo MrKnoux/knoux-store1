@@ -40,6 +40,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/engineering',
     '/about',
     '/contact',
+    // The account routes. They hold nothing confidential, so they are listed
+    // like the rest of the site rather than hidden.
+    '/login',
+    '/register',
+    '/forgot-password',
   ];
 
   const productRoutes = softwareProducts.map((product) => `/products/${product.slug}`);

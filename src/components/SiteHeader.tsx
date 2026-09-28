@@ -65,6 +65,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
+          <Link
+            className="header-access"
+            href="/login"
+            aria-current={pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/forgot-password') ? 'page' : undefined}
+          >
+            ACCESS
+          </Link>
           <button
             className="header-search"
             type="button"
@@ -115,6 +122,11 @@ export function SiteHeader() {
           ))}
           <Link href="/build" className="mobile-panel__cta" onClick={() => setMenu(false)}>
             Open the Composer
+            <span aria-hidden="true">↗</span>
+          </Link>
+          <Link href="/login" className="mobile-panel__access" onClick={() => setMenu(false)}>
+            <span>13</span>
+            Access your account
             <span aria-hidden="true">↗</span>
           </Link>
         </nav>

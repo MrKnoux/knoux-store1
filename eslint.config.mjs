@@ -5,6 +5,18 @@ import nextTs from 'eslint-config-next/typescript';
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    rules: {
+      // A leading underscore marks a parameter the contract requires but this
+      // implementation deliberately does not read, such as the arguments of the
+      // unconfigured auth adapter. Declared once here instead of worked around
+      // at every call site.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none' },
+      ],
+    },
+  },
   globalIgnores([
     '.next*/**',
     'out/**',

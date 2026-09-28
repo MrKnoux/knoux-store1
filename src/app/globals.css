@@ -1125,3 +1125,778 @@
   .manifesto-section .action { padding: 14px 18px; }
   .contact-form-panel { padding: 22px 18px; }
 }
+
+/* --- Specialist archive mechanics --------------------------------- */
+.specialist-intro__head{display:grid;grid-template-columns:minmax(180px,.72fr) minmax(0,1.28fr);gap:clamp(28px,5vw,86px);align-items:start;margin-bottom:clamp(42px,6vw,92px);border-top:1px solid var(--line);padding-top:22px}
+.specialist-intro__head p{margin:0;max-width:64ch;color:var(--muted);font-size:14px;line-height:1.8}
+.archive-shell{display:grid;grid-template-columns:minmax(250px,34%) minmax(0,66%);gap:clamp(30px,5vw,82px);align-items:start}
+.archive-context{position:sticky;top:104px;min-height:calc(100vh - 138px);display:flex;flex-direction:column;align-items:stretch;border-top:1px solid var(--line-strong);padding-top:20px}
+.archive-context__counter{margin:16px 0 0;font:9px/1.5 var(--mono);letter-spacing:.15em;color:#a896b8;text-transform:uppercase}
+.archive-context h2{font-size:clamp(36px,4.2vw,68px);font-weight:400;letter-spacing:-.07em;line-height:.96;margin:18px 0 16px}
+.archive-context__statement{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.7;max-width:43ch}
+.archive-context__facts{display:grid;gap:0;margin:24px 0 0;border-top:1px solid var(--line)}
+.archive-context__facts>div{display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.archive-context__facts dt{font:8px/1.5 var(--mono);letter-spacing:.13em;color:var(--dim)}
+.archive-context__facts dd{margin:0;color:#c8c2cc;font-size:11px;line-height:1.55;overflow-wrap:anywhere}
+.archive-context__source{margin-top:auto;padding:20px 0 10px;border-top:1px solid var(--line);font:9px/1.5 var(--mono);letter-spacing:.12em;color:#bea9d1;display:flex;justify-content:space-between;gap:18px}
+.archive-context__source:hover,.archive-context__source:focus-visible{color:var(--text)}
+.signature-field{position:relative;min-height:210px;border:1px solid #302d34;background:#090a0c;overflow:hidden;isolation:isolate}
+.signature-field--compact{min-height:176px}
+.signature-field::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 54% 46%,rgba(161,138,203,.12),transparent 58%);pointer-events:none}
+.signature-field__svg{position:absolute;inset:7%;width:86%;height:86%;overflow:visible;transform:rotate(var(--signature-phase));transition:transform var(--motion-response) var(--ease-standard)}
+.signature-field__orbit,.signature-field__axis,.signature-field__trace{fill:none;vector-effect:non-scaling-stroke}
+.signature-field__orbit{stroke:#665b70;stroke-width:.45;opacity:.56}
+.signature-field__orbit--inner{stroke:#9785a7;stroke-dasharray:1.5 3.3;opacity:.64}
+.signature-field__axis{stroke:#4d4753;stroke-width:.3;opacity:.42}
+.signature-field__trace{stroke:#b29bc8;stroke-width:.58;stroke-dasharray:3 5;stroke-linecap:round;stroke-linejoin:round;opacity:.72;animation:signatureTrace 14s linear infinite paused}
+.signature-field__node{fill:#d7d2dc;opacity:.82;filter:drop-shadow(0 0 2px rgba(185,158,207,.58))}
+.signature-field__code{position:absolute;left:14px;bottom:12px;font:8px/1.4 var(--mono);letter-spacing:.13em;color:#817987;text-transform:uppercase}
+@keyframes signatureTrace{to{stroke-dashoffset:-34}}
+[data-signature="topology"] .signature-field__orbit--outer,[data-signature="relationship-map"] .signature-field__orbit--inner{opacity:.18}
+[data-signature="data-field"] .signature-field__axis{stroke-dasharray:1 2;opacity:.74}
+[data-signature="architecture-grid"]{background-color:#090a0c;background-image:linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff07 1px,transparent 1px);background-size:18px 18px}
+[data-signature="particle-cloud"] .signature-field__orbit{opacity:.08}[data-signature="particle-cloud"] .signature-field__trace{opacity:.22}
+[data-signature="relationship-map"] .signature-field__trace{stroke-width:.9;opacity:.85}
+[data-signature="signal-wave"] .signature-field__svg{transform:rotate(var(--signature-phase)) scaleY(.62)}
+.case-file-list{border-top:1px solid var(--line-strong)}
+.case-file-record{position:relative;display:grid;grid-template-columns:minmax(170px,34%) minmax(0,66%);gap:clamp(22px,3vw,48px);padding:clamp(28px,3.6vw,54px) 0;border-bottom:1px solid var(--line);color:inherit;overflow:hidden}
+.case-file-record::before{content:"";position:absolute;inset:0;background:#ffffff03;opacity:0;transition:opacity var(--motion-response)}
+.case-file-record:hover::before,.case-file-record:focus-visible::before,.case-file-record[data-active="true"]::before{opacity:1}
+.case-file-record:focus-visible{outline:1px solid #786888;outline-offset:6px}
+.case-file-record__visual{min-width:0;align-self:start}
+.case-file-record__copy{min-width:0;position:relative;z-index:1;transition:transform var(--motion-response) var(--ease-standard)}
+.case-file-record:hover .case-file-record__copy,.case-file-record:focus-visible .case-file-record__copy{transform:translateX(8px)}
+.case-file-record__meta{display:flex;flex-wrap:wrap;gap:8px 15px;font:8px/1.5 var(--mono);letter-spacing:.13em;color:#817987;text-transform:uppercase}
+.case-file-record__meta span+span::before{content:"/";margin-right:15px;color:#4f4a53}
+.case-file-record h3{font-size:clamp(34px,4.4vw,66px);font-weight:400;letter-spacing:-.07em;line-height:.98;margin:17px 0}
+.case-file-record p{margin:0;color:var(--muted);font-size:13px;line-height:1.73;max-width:67ch}
+.case-file-record__technology{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.case-file-record__technology span{border:1px solid #343039;padding:5px 8px;font:8px/1.3 var(--mono);letter-spacing:.08em;color:#9f96a4}
+.case-file-record__evidence{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:28px;padding-top:14px;border-top:1px solid var(--line-soft);font:8px/1.5 var(--mono);letter-spacing:.12em;color:#827989}
+.case-file-record__arrow{font-size:17px;transform:rotate(45deg);transition:transform var(--motion-response),color var(--motion-response)}
+.case-file-record:hover .case-file-record__arrow,.case-file-record:focus-visible .case-file-record__arrow{transform:rotate(0);color:#c7b3d8}
+.case-file-record[data-active="true"][data-visible="true"] .signature-field__trace{animation-play-state:running}
+.archive-context--engineering{min-height:calc(100vh - 126px)}
+.engineering-context-nav{display:flex;flex-direction:column;margin:24px 0;border-top:1px solid var(--line)}
+.engineering-context-nav a{display:grid;grid-template-columns:54px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:11px;color:#8f8893;transition:padding-left var(--motion-response),color var(--motion-response)}
+.engineering-context-nav a span{font:8px var(--mono);letter-spacing:.12em;color:#796c84}
+.engineering-context-nav a:hover,.engineering-context-nav a:focus-visible,.engineering-context-nav a[aria-current="true"]{color:var(--text);padding-left:7px}
+.engineering-context-nav a:focus-visible{outline:1px solid #74657f;outline-offset:4px}
+.engineering-dossiers{border-top:1px solid var(--line-strong)}
+.engineering-dossier{scroll-margin-top:110px;padding:clamp(38px,5.4vw,84px) 0;border-bottom:1px solid var(--line)}
+.engineering-dossier[data-active="true"]{border-bottom-color:#4c4255}
+.engineering-dossier__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,30%);gap:clamp(24px,4vw,52px);align-items:start}
+.engineering-dossier__head h2{font-size:clamp(40px,5.2vw,78px);font-weight:400;letter-spacing:-.075em;line-height:.96;margin:18px 0}
+.engineering-dossier__head p{font-size:14px;line-height:1.78;color:var(--muted);margin:0;max-width:64ch}
+.engineering-dossier__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(26px,4vw,58px);margin-top:40px;padding-top:30px;border-top:1px solid var(--line)}
+.engineering-dossier__grid h3{font-size:18px;font-weight:400;letter-spacing:-.03em;margin:0 0 18px}
+.engineering-dossier__grid ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.engineering-dossier__grid li{position:relative;padding-left:18px;color:#aaa3ae;font-size:12px;line-height:1.67}
+.engineering-dossier__grid li::before{content:"";position:absolute;left:0;top:.75em;width:7px;border-top:1px solid #9d88b0}
+.engineering-dossier__evidence{display:grid;gap:24px;margin-top:34px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.engineering-dossier__evidence>div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px}
+.engineering-dossier__evidence p{margin:0;color:#b6aeba;font-size:12px;line-height:1.65}
+.engineering-dossier__evidence ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.engineering-dossier__evidence li{display:grid;grid-template-columns:minmax(130px,.48fr) minmax(0,1.52fr);gap:18px;font-size:11px;line-height:1.55;color:#938b99}
+.engineering-dossier__evidence code{font-family:var(--mono);font-size:9px;color:#b69dca;overflow-wrap:anywhere}
+.engineering-dossier__relations{display:flex;flex-wrap:wrap;gap:8px}
+.engineering-dossier__relations a{border:1px solid #36313a;padding:7px 9px;font:8px/1.4 var(--mono);letter-spacing:.08em;color:#a59dac}
+.engineering-dossier__relations a:hover,.engineering-dossier__relations a:focus-visible{border-color:#88759a;color:var(--text)}
+.engineering-dossier__footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:18px}
+.engineering-dossier__footer a{font:8px/1.4 var(--mono);letter-spacing:.13em;color:#a68eb9}
+.engineering-dossier__footer a:hover,.engineering-dossier__footer a:focus-visible{color:var(--text)}
+.engineering-dossier[data-active="true"][data-visible="true"] .signature-field__trace{animation-play-state:running}
+.solution-row-system{padding-bottom:clamp(74px,8vw,132px)}
+.solution-row-system__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,38%);gap:clamp(30px,5vw,78px);align-items:end;margin-bottom:34px}
+.solution-row-system__head h2{font-size:clamp(38px,5vw,74px);font-weight:400;letter-spacing:-.07em;line-height:1;margin:18px 0 0}
+.solution-row-system__context{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center}
+.solution-row-system__context .signature-field{grid-row:1/3;min-height:122px}
+.solution-row-system__context p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.solution-row-system__context .mono{font-size:8px;line-height:1.55;color:#8f8199}
+.solution-mission-rows{border-top:1px solid var(--line-strong)}
+.solution-mission-row{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr) 170px 70px 26px;gap:clamp(12px,2vw,30px);align-items:center;min-height:94px;padding:20px 0;border-bottom:1px solid var(--line);color:inherit;overflow:hidden}
+.solution-mission-row:focus-visible{outline:1px solid #796888;outline-offset:5px}
+.solution-mission-row__index{font:9px var(--mono);letter-spacing:.13em;color:#776d7e}
+.solution-mission-row__body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.solution-mission-row__body strong{font-size:clamp(24px,3vw,42px);font-weight:400;letter-spacing:-.055em;transition:transform var(--motion-response),color var(--motion-response)}
+.solution-mission-row__body>span{max-height:0;opacity:0;overflow:hidden;color:var(--muted);font-size:11.5px;line-height:1.55;transform:translateY(-4px);transition:max-height var(--motion-response),opacity var(--motion-response),transform var(--motion-response)}
+.solution-mission-row:hover .solution-mission-row__body strong,.solution-mission-row:focus-visible .solution-mission-row__body strong,.solution-mission-row[data-active="true"] .solution-mission-row__body strong{transform:translateX(9px);color:#f0edf2}
+.solution-mission-row:hover .solution-mission-row__body>span,.solution-mission-row:focus-visible .solution-mission-row__body>span,.solution-mission-row[data-active="true"] .solution-mission-row__body>span{max-height:76px;opacity:1;transform:none}
+.solution-mission-row__context{font:8px/1.5 var(--mono);letter-spacing:.11em;color:#77707d;text-align:right}
+.solution-mission-row__signal{display:flex;gap:4px;justify-content:center;align-items:center;height:26px}
+.solution-mission-row__signal i{display:block;width:2px;height:2px;border-radius:50%;background:#71677a;transition:width var(--motion-response),background var(--motion-response),box-shadow var(--motion-response)}
+.solution-mission-row:hover .solution-mission-row__signal i,.solution-mission-row:focus-visible .solution-mission-row__signal i,.solution-mission-row[data-active="true"] .solution-mission-row__signal i{width:14px;border-radius:1px;background:#a58cb9;box-shadow:0 0 12px #a18acb33}
+.solution-mission-row__arrow{font-size:17px;color:#8d8295;transform:rotate(45deg);transition:transform var(--motion-response),color var(--motion-response)}
+.solution-mission-row:hover .solution-mission-row__arrow,.solution-mission-row:focus-visible .solution-mission-row__arrow{transform:rotate(0);color:#cfbfda}
+.material-lab__layers .signature-field{position:absolute;inset:9% 7% 12% 5%;min-height:0;border:0;background:transparent;opacity:.58;mix-blend-mode:screen}
+.material-lab__layers .signature-field::before,.material-lab__layers .signature-field__code{display:none}
+.material-lab[data-scene] .material-lab__layer{border-color:#62596a;background:linear-gradient(140deg,#ffffff08,#0000 58%)}
+.material-lab__index button:focus-visible{outline:1px solid #9b86ad;outline-offset:3px;color:#f1ebf4}
+.material-lab__focus{position:relative;z-index:2}
+@media(max-width:980px){
+ .archive-shell{grid-template-columns:minmax(220px,31%) minmax(0,69%);gap:34px}
+ .case-file-record{grid-template-columns:1fr;gap:22px}
+ .case-file-record__visual .signature-field{min-height:185px}
+ .engineering-dossier__head{grid-template-columns:1fr}
+ .engineering-dossier__head>.signature-field{max-width:360px}
+ .solution-row-system__head{grid-template-columns:1fr}
+ .solution-row-system__context{max-width:620px}
+ .solution-mission-row{grid-template-columns:44px minmax(0,1fr) 130px 58px 24px}
+}
+@media(max-width:760px){
+ .specialist-intro__head{grid-template-columns:1fr;gap:16px;margin-bottom:38px}
+ .archive-shell{display:block}
+ .archive-context{position:relative;top:auto;min-height:0;margin-bottom:42px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+ .archive-context .signature-field{min-height:190px;margin-top:4px}
+ .archive-context__source{margin-top:24px}
+ .case-file-record{grid-template-columns:1fr;padding:30px 0}
+ .case-file-record__copy{transform:none!important}
+ .case-file-record h3{font-size:clamp(36px,11vw,58px)}
+ .case-file-record__technology{gap:5px}
+ .case-file-record[data-active="true"][data-visible="true"] .signature-field__trace,.engineering-dossier[data-active="true"][data-visible="true"] .signature-field__trace{animation-play-state:paused}
+ .archive-context--engineering{min-height:0}
+ .engineering-context-nav{display:grid;grid-template-columns:1fr 1fr}
+ .engineering-context-nav a{grid-template-columns:42px minmax(0,1fr);padding:11px 8px}
+ .engineering-dossier{scroll-margin-top:82px;padding:44px 0}
+ .engineering-dossier__grid{grid-template-columns:1fr}
+ .engineering-dossier__evidence>div{grid-template-columns:1fr;gap:10px}
+ .engineering-dossier__evidence li{grid-template-columns:1fr;gap:4px}
+ .solution-row-system__head{gap:24px}
+ .solution-row-system__context{grid-template-columns:112px minmax(0,1fr)}
+ .solution-row-system__context .signature-field{min-height:100px}
+ .solution-mission-row{grid-template-columns:36px minmax(0,1fr) 24px;gap:12px;min-height:106px}
+ .solution-mission-row__context,.solution-mission-row__signal{display:none}
+ .solution-mission-row__body>span{max-height:none;opacity:1;transform:none;font-size:11px}
+ .solution-mission-row:hover .solution-mission-row__body strong,.solution-mission-row:focus-visible .solution-mission-row__body strong,.solution-mission-row[data-active="true"] .solution-mission-row__body strong{transform:none}
+ .solution-mission-row__arrow{grid-column:3}
+ .material-lab__layers .signature-field{inset:4% 18% 4% 12%;opacity:.48}
+}
+@media(max-width:400px){
+ .engineering-context-nav{grid-template-columns:1fr}
+ .archive-context__facts>div{grid-template-columns:72px minmax(0,1fr)}
+ .solution-row-system__context{grid-template-columns:1fr}
+ .solution-row-system__context .signature-field{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .signature-field__trace{animation:none!important}
+  .signature-field__svg,.case-file-record__copy,.case-file-record__arrow,.solution-mission-row__body strong,.solution-mission-row__body>span,.solution-mission-row__signal i,.solution-mission-row__arrow{transition:none!important}
+  .case-file-record:hover .case-file-record__copy,.case-file-record:focus-visible .case-file-record__copy,.solution-mission-row:hover .solution-mission-row__body strong,.solution-mission-row:focus-visible .solution-mission-row__body strong{transform:none}
+}
+
+/* ==========================================================
+   KNOuX ARRIVAL CHAMBER
+   The account entrance. Same void, same silver field, same
+   restrained violet as the accepted hero — at Canvas 2D cost
+   rather than WebGL, so the auth surface never adds a second
+   permanent renderer to the site.
+
+   Everything here is progressive enhancement. The finished,
+   readable chamber is the DEFAULT state; the cinematic rise is
+   only armed by the pre-paint marker in ChamberBoot, which a
+   visitor with reduced motion, a low-power device or no
+   scripting never receives. The interface cannot be withheld.
+   ========================================================== */
+
+/* --- Chamber root and stage --------------------------------------- */
+.chamber-page{
+  position:relative;
+  min-height:100svh;
+  /* Clips the travelling figure at the viewport edge without creating a
+     scroll container, so vertical scrolling on a short screen still works. */
+  overflow-x:clip;
+  background:#070809;
+}
+.chamber-page__stage{
+  position:relative;
+  z-index:2;
+  min-height:100svh;
+  display:grid;
+  align-content:center;
+  justify-items:end;
+  /* Clears the fixed 78px site header, then holds the form off the right edge
+     on the same measure the rest of the site uses. */
+  padding:132px max(5.3vw,24px) 104px;
+}
+/* The metadata occupies the negative space the environment leaves, so it never
+   competes with the form for attention. */
+.chamber-page__meta{
+  position:absolute;
+  z-index:3;
+  top:112px;
+  left:max(5.3vw,24px);
+  right:max(5.3vw,24px);
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  font-family:var(--mono);
+  font-size:8.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:#5c5b60;
+  pointer-events:none;
+}
+.chamber-page__meta-line--dim{color:#43424a}
+
+/* --- Environment --------------------------------------------------- */
+.chamber{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.chamber__void{
+  position:absolute;
+  inset:0;
+  /* The homepage's own arrival gradient, so the two rooms share a floor. */
+  background:radial-gradient(ellipse at 62% 38%,#131217 0%,#090a0b 54%,#070809 100%);
+}
+/* --- The field ---------------------------------------------------- */
+/* The canvas is the whole particle universe: ambient stars and the canonical
+   KNOuX silhouette resolving out of them. The mark is not a logo placed on the
+   page — it is the same sampled geometry the hero builds in WebGL, assembled
+   here by Canvas 2D when the arrival figure stops. */
+.chamber__plane{
+  position:absolute;
+  inset:-2%;
+  transform:translate3d(var(--chamber-x,0px),var(--chamber-y,0px),0);
+  will-change:transform;
+}
+.chamber__field{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* Very fine grain so a wide dark gradient never bands. Rendered as an inline
+   data URI: no request, no asset, no third-party script. */
+.chamber__grain{
+  position:absolute;
+  inset:0;
+  opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* --- Architectural planes -------------------------------------------- */
+/* Both lines describe a room the form stands in rather than rules on a page:
+   each fades out before it reaches the panel, so they read as depth instead of
+   as table edges drawn across the viewport. */
+.chamber__horizon{
+  position:absolute;
+  left:0;
+  right:46%;
+  top:38%;
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,#1e1d23 26%,#2b2932 62%,transparent 100%);
+  opacity:.5;
+}
+.chamber__seam{
+  position:absolute;
+  top:12%;bottom:12%;
+  left:31%;
+  width:1px;
+  background:linear-gradient(180deg,transparent,#1c1b21 40%,#1c1b21 60%,transparent);
+  opacity:.45;
+}
+.chamber__return{
+  position:absolute;
+  left:0;
+  right:58%;
+  top:calc(38% + 96px);
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,#191820 44%,transparent 100%);
+  opacity:.4;
+}
+
+/* --- Floor and arrival figure -------------------------------------- */
+/* The floor belongs to the left field only. Running it the full width turned it
+   into a table edge that ran under the form. */
+.chamber__floor{position:absolute;left:0;right:44%;bottom:27%;height:1px}
+.chamber__floor-line{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent 0%,#2a2731 12%,#544b64 34%,#77699550 50%,#544b64 66%,#2a2731 88%,transparent 100%);
+  opacity:0;
+  transition:opacity 420ms ease;
+}
+.chamber__floor.is-signalled .chamber__floor-line{opacity:.9}
+/* A single violet signal travelling the floor line, lit once and not looping. */
+.chamber__floor-pulse{
+  position:absolute;
+  top:-1px;
+  left:0;
+  width:22%;
+  height:3px;
+  background:linear-gradient(90deg,transparent,rgba(161,138,203,.85),transparent);
+  opacity:0;
+  filter:blur(.4px);
+}
+.chamber__floor.is-signalled .chamber__floor-pulse{
+  animation:chamberFloorPulse 620ms var(--ease-entrance) 1 forwards;
+}
+@keyframes chamberFloorPulse{
+  0%{opacity:0;transform:translateX(-30%) scaleX(.5)}
+  22%{opacity:1}
+  100%{opacity:0;transform:translateX(560%) scaleX(1.4)}
+}
+
+.chamber__figure-dock{
+  position:absolute;
+  z-index:1;
+  left:0;
+  bottom:27%;
+  width:132px;
+  /* The figure stops in the left third, well clear of the mark that resolves
+     to its right and the panel that rises beyond both, so the composition stays
+     deliberately unbalanced and nothing overlaps. */
+  --chamber-stand:19vw;
+}
+/* DEFAULT = standing at the destination. The offscreen start is armed, because
+   an un-armed chamber has to render the finished scene: without this the figure
+   would sit half off the left edge for every visitor who declined the sequence. */
+.arrival-figure{transform:translateX(var(--chamber-stand))}
+html[data-chamber="armed"] .arrival-figure{transform:translateX(-150px)}
+.arrival-figure__svg{width:100%;height:auto;display:block;overflow:visible}
+.arrival-figure__shadow{fill:rgba(161,138,203,.18)}
+/* Graphite body, bright silver edges. The figure is lit from the same dark room
+   as everything else, so it reads as a silhouette with drawn detail. The edges
+   carry most of the definition: without them the figure is a dark shape. */
+.arrival-figure__torso path,.arrival-figure__head ellipse,.arrival-figure__head path,
+.arrival-figure__leg path,.arrival-figure__arm path{fill:#1e2028;stroke:#7b7689;stroke-width:.65;stroke-linejoin:round}
+/* The front planes sit a shade lighter, which is what separates the near limbs
+   from the far ones without needing an outline on every edge. */
+.arrival-figure__torso,.arrival-figure__leg--near path,.arrival-figure__arm--near path{fill:#282b34}
+.arrival-figure__head ellipse{fill:#2c2f39}
+.arrival-figure__seam,.arrival-figure__belt,.arrival-figure__harness,.arrival-figure__collar{
+  fill:none;
+  stroke:#8d80a4;
+  stroke-width:.65;
+  opacity:.8;
+}
+.arrival-figure__knee{stroke:#6a6479;stroke-width:.5;opacity:.6}
+.arrival-figure__visor{stroke:var(--violet);opacity:.95;stroke-width:.9;fill:none}
+.arrival-figure__node-body{fill:#15161b;stroke:#6a5f7d;stroke-width:.7}
+.arrival-figure__node-core{fill:#a18acb;opacity:.25;transition:opacity 420ms ease}
+/* The node lights the moment the figure stops: the KNOuX beat that replaces
+   the reference's handbag drop. */
+.arrival-figure.is-arrived .arrival-figure__node-core{opacity:1;filter:drop-shadow(0 0 6px rgba(161,138,203,.85))}
+.arrival-figure.is-arrived .arrival-figure__shadow{rx:30}
+
+/* Limbs. Pivots are written onto the elements from the figure's own geometry,
+   so a change to the drawing cannot leave the cycle rotating about a point that
+   is no longer the hip or the shoulder. */
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__leg--near{animation:chamberStepLeg 360ms ease-in-out infinite alternate}
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__leg--far{animation:chamberStepLeg 360ms ease-in-out infinite alternate-reverse}
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__arm--near{animation:chamberStepArm 360ms ease-in-out infinite alternate}
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__arm--far{animation:chamberStepArm 360ms ease-in-out infinite alternate-reverse}
+@keyframes chamberStepLeg{from{transform:rotate(-17deg)}to{transform:rotate(19deg)}}
+@keyframes chamberStepArm{from{transform:rotate(15deg)}to{transform:rotate(-18deg)}}
+/* The body bobs against the stride, so the figure is not a decal sliding
+   across the floor. */
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__torso,
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__head,
+html[data-chamber="armed"] .arrival-figure.is-travelling .arrival-figure__node{
+  animation:chamberGait 360ms ease-in-out infinite alternate;
+}
+@keyframes chamberGait{from{transform:translateY(0)}to{transform:translateY(-1.6px)}}
+/* The cycle stops cleanly: no loop, no easing back into a walk, just a figure
+   standing. */
+.arrival-figure.is-arrived .arrival-figure__leg,
+.arrival-figure.is-arrived .arrival-figure__arm{animation:none;transform:rotate(0deg)}
+.arrival-figure.is-arrived .arrival-figure__torso,
+.arrival-figure.is-arrived .arrival-figure__head,
+.arrival-figure.is-arrived .arrival-figure__node{animation:none;transform:none}
+
+/* Travel decelerates into the destination: a firm departure that settles rather
+   than stopping dead, which is what makes the arrival read as a decision. */
+html[data-chamber="armed"] .arrival-figure.is-travelling{animation:chamberFigureTravel 780ms cubic-bezier(.18,.72,.24,1) forwards}
+html[data-chamber="armed"] .arrival-figure.is-arrived{animation:none;transform:translateX(var(--chamber-stand))}
+@keyframes chamberFigureTravel{
+  from{transform:translateX(-150px)}
+  to{transform:translateX(var(--chamber-stand))}
+}
+/* The signal node marks the arrival point on the floor. */
+.chamber__node-signal{
+  position:absolute;
+  left:calc(var(--chamber-stand) + 56px);
+  bottom:-4px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--violet);
+  box-shadow:0 0 16px rgba(161,138,203,.85);
+  opacity:0;
+  transform:scale(.4);
+  transition:opacity 380ms ease,transform 520ms var(--ease-entrance);
+}
+.chamber__figure-dock:has(.arrival-figure.is-arrived) .chamber__node-signal{opacity:1;transform:scale(1)}
+
+/* --- The auth panel ------------------------------------------------ */
+/* DEFAULT = risen. The hidden pre-rise state is scoped to the armed marker, so
+   an un-armed chamber is always complete and usable. */
+.chamber__panel-dock{width:min(100%,392px)}
+.auth-panel{
+  position:relative;
+  padding:clamp(26px,2.5vw,36px);
+  background:linear-gradient(168deg,rgba(20,21,25,.78) 0%,rgba(11,12,14,.9) 100%);
+  border:1px solid var(--line);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 40px 120px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.035);
+}
+html[data-chamber="armed"] .auth-panel{
+  opacity:0;
+  transform:translateY(54px) scale(.975);
+  transition:opacity 520ms var(--ease-entrance),transform 560ms var(--ease-entrance);
+}
+html[data-chamber="armed"] .auth-panel.is-risen{opacity:1;transform:translateY(0) scale(1)}
+/* Corner ticks. Four hairlines that read the surface as a measured plane
+   rather than a rounded card, which is the difference between an instrument
+   panel and a login box. */
+.auth-panel::before,.auth-panel::after{
+  content:"";
+  position:absolute;
+  width:9px;height:9px;
+  border-color:var(--violet-dim);
+  border-style:solid;
+  border-width:0;
+  opacity:.55;
+  transition:opacity 400ms ease;
+}
+.auth-panel::before{top:-1px;left:-1px;border-top-width:1px;border-left-width:1px}
+.auth-panel::after{bottom:-1px;right:-1px;border-bottom-width:1px;border-right-width:1px}
+.auth-panel.is-risen::before,.auth-panel.is-risen::after{opacity:.9}
+/* Restrained silver-to-violet signal along the top edge, lit as it rises. */
+.auth-panel__signal{
+  position:absolute;
+  top:0;
+  left:14%;
+  right:14%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(214,208,226,.55) 42%,rgba(161,138,203,.8) 58%,transparent);
+  opacity:0;
+  transform:scaleX(.6);
+  transition:opacity 620ms ease 140ms,transform 760ms var(--ease-entrance) 140ms;
+}
+.auth-panel.is-risen .auth-panel__signal{opacity:1;transform:scaleX(1)}
+
+/* --- Panel internals, revealed in order ----------------------------- */
+/* Also default-visible, for the same reason the panel is. */
+.auth-form>*{opacity:1;transform:none}
+html[data-chamber="armed"] .auth-panel [data-stagger]{
+  opacity:0;
+  transform:translateY(13px);
+  transition:opacity 420ms var(--ease-entrance),transform 500ms var(--ease-entrance);
+}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger]{opacity:1;transform:none}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="identity"]{transition-delay:60ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="heading"]{transition-delay:120ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="statement"]{transition-delay:180ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="email"]{transition-delay:240ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="password"]{transition-delay:300ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="confirmPassword"]{transition-delay:360ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="options"]{transition-delay:410ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="submit"]{transition-delay:470ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="status"]{transition-delay:520ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="providers"]{transition-delay:560ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="google"],
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="github"]{transition-delay:610ms}
+html[data-chamber="armed"] .auth-panel.is-risen [data-stagger="foot"]{transition-delay:660ms}
+
+.auth-form{display:flex;flex-direction:column;gap:17px}
+.auth-identity{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line-soft)}
+.auth-identity__mark{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;letter-spacing:-.075em}
+.auth-identity__code{font-family:var(--mono);font-size:8px;letter-spacing:.15em;color:#5a5862;white-space:nowrap}
+.auth-form__heading{
+  font-size:clamp(27px,2.3vw,33px);
+  letter-spacing:-.055em;
+  font-weight:400;
+  line-height:1.08;
+  margin:2px 0 0;
+}
+.auth-form__statement{font-size:12.5px;line-height:1.6;color:var(--muted);margin:-6px 0 3px}
+
+/* --- Fields --------------------------------------------------------- */
+.auth-field{position:relative}
+.auth-field .field__control,.auth-field__control{position:relative;display:block}
+.auth-field input{
+  background:rgba(255,255,255,.022);
+  border:1px solid var(--line);
+  padding:13px 15px;
+  font-size:15px;
+  color:var(--text);
+  border-radius:0;
+  transition:border-color 180ms,background 180ms,box-shadow 180ms;
+  width:100%;
+}
+.auth-field input::placeholder{color:#4a4b4f}
+.auth-field input:focus{
+  border-color:var(--violet-dim);
+  background:rgba(161,138,203,.045);
+  box-shadow:0 0 0 3px rgba(161,138,203,.09);
+}
+.auth-field.is-invalid input{border-color:#7d4a41}
+.auth-field.is-invalid input:focus{box-shadow:0 0 0 3px rgba(190,110,94,.11)}
+.auth-field__control input[type="password"],.auth-field__control input[type="text"]{padding-right:52px}
+.auth-field__toggle{
+  position:absolute;
+  right:2px;
+  top:50%;
+  transform:translateY(-50%);
+  /* A 44px target, so the control is comfortably tappable on a phone. */
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  background:transparent;
+  border:0;
+  color:#7e7c86;
+  transition:color 180ms;
+}
+.auth-field__toggle:hover{color:var(--text)}
+.auth-field__toggle svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.auth-field__toggle[aria-pressed="true"]{color:var(--violet)}
+.auth-field__error{
+  font-family:var(--mono);
+  font-size:9.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#c98d7d;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.auth-field__error::before{content:"";width:4px;height:4px;background:#c98d7d;flex:none}
+/* Errors are marked by a rule and a label, never by colour alone. */
+
+.auth-form__options{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.auth-remember{gap:9px;padding:6px 10px 6px 8px}
+.auth-remember .checkbox__mark{width:13px;height:13px;flex:none;border:1px solid var(--line-strong);position:relative;transition:border-color 180ms,background 180ms}
+.auth-remember .checkbox__mark::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  background:var(--violet);
+  opacity:0;
+  transition:opacity 180ms;
+}
+.auth-remember:has(input:checked) .checkbox__mark{border-color:var(--violet-dim)}
+.auth-remember:has(input:checked) .checkbox__mark::after{opacity:1}
+.auth-remember:has(input:focus-visible){outline:2px solid var(--violet);outline-offset:2px}
+.auth-link{
+  font-family:var(--mono);
+  font-size:9.5px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--violet);
+  border-bottom:1px solid var(--violet-dim);
+  padding-bottom:3px;
+  transition:color 180ms,border-color 180ms;
+}
+.auth-link:hover{color:#c9b6e2;border-color:var(--violet)}
+
+/* --- Primary action -------------------------------------------------- */
+.auth-submit{
+  position:relative;
+  width:100%;
+  padding:15px 18px;
+  background:#16151c;
+  border:1px solid #3a3646;
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  overflow:hidden;
+  transition:background 180ms,border-color 180ms,color 180ms;
+}
+.auth-submit:hover{background:#1c1a24;border-color:var(--violet-dim)}
+.auth-submit:disabled{opacity:.62}
+.auth-submit__label{position:relative;z-index:1}
+/* One sweep across the control, and only while the form is waiting on the
+   server. A permanently looping shimmer would read as attention-seeking. */
+.auth-submit__pulse{
+  position:absolute;
+  top:0;bottom:0;
+  left:-40%;
+  width:38%;
+  background:linear-gradient(90deg,transparent,rgba(161,138,203,.22),transparent);
+  animation:chamberSweep 1150ms var(--ease-standard) infinite;
+}
+@keyframes chamberSweep{0%{transform:translateX(0)}100%{transform:translateX(360%)}}
+@media(prefers-reduced-motion:reduce){
+  .auth-submit__pulse{animation:none;left:0;width:100%;background:none;opacity:.5}
+}
+
+/* --- Status ---------------------------------------------------------- */
+.auth-status{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:12px;
+  line-height:1.6;
+  color:var(--muted);
+  margin:0;
+  min-height:18px;
+}
+.auth-status__rule{
+  width:2px;
+  align-self:stretch;
+  min-height:18px;
+  background:var(--signal-amber);
+  flex:none;
+  transition:background 200ms ease;
+}
+/* Idle: a hairline across the reserved line, so the space reads as a designed
+   slot waiting for a verdict rather than as a gap the layout forgot to close. */
+.auth-status__idle{
+  position:absolute;
+  left:0;right:0;
+  top:8px;
+  height:1px;
+  background:var(--line-soft);
+}
+.auth-status{position:relative}
+.auth-status--unavailable{color:var(--text-dim)}
+.auth-status--error .auth-status__rule{background:#c98d7d}
+
+/* --- Providers -------------------------------------------------------- */
+.auth-divider{display:flex;align-items:center;gap:14px;margin:0}
+.auth-divider__rule{height:1px;background:var(--line);flex:1}
+.auth-divider__label{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.auth-providers{display:flex;flex-direction:column;gap:11px}
+.auth-providers__row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auth-provider{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"icon label" ". state";
+  align-items:center;
+  column-gap:9px;
+  row-gap:5px;
+  padding:11px 12px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  transition:background 180ms,border-color 180ms,color 180ms;
+  text-align:left;
+}
+.auth-provider:hover{background:rgba(255,255,255,.045);border-color:var(--line-strong);color:var(--text)}
+.auth-provider svg{width:16px;height:16px;flex:none;grid-area:icon}
+.auth-provider__label{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;grid-area:label}
+.auth-provider__state{
+  font-family:var(--mono);
+  font-size:7.5px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--dim);
+  grid-area:state;
+}
+.auth-providers__note{font-size:11px;line-height:1.55;color:var(--dim);margin:0}
+.auth-form__foot{
+  font-size:12.5px;
+  color:var(--muted);
+  margin:2px 0 0;
+  padding-top:16px;
+  border-top:1px solid var(--line-soft);
+}
+
+/* --- Narrow viewports ------------------------------------------------- */
+/* A recomposition, not a shrunken desktop. On a phone the environment is a
+   shallow band above the form: a small operator, the mark resolving beside it,
+   one floor line, nothing else. The form then owns the rest of the screen. The
+   figure no longer crosses the width, and pointer response is off entirely so
+   nothing chases a touch. */
+@media(max-width:1080px){
+  .chamber__figure-dock{--chamber-stand:16vw;width:112px}
+  .chamber__seam{left:22%}
+}
+@media(max-width:860px){
+  .chamber-page__stage{
+    justify-items:center;
+    align-content:start;
+    /* Clears the fixed header, the metadata line and the whole environment
+       band, so the form never renders on top of the scene. */
+    padding:212px max(5.3vw,20px) 54px;
+  }
+  .chamber__panel-dock{width:min(100%,470px)}
+  /* The metadata label is dropped rather than shrunk: in the phone band it
+     would sit on top of the mark, and a label that cannot hold its own space
+     is decoration pretending to be information. */
+  .chamber-page__meta{display:none}
+  /* The operator arrives at the band's left edge and settles in place. No
+     horizontal travel: a figure crossing a phone screen is a nuisance and risks
+     overflow. */
+  .chamber__figure-dock{
+    left:20px;
+    bottom:auto;
+    top:112px;
+    width:54px;
+    --chamber-stand:0px;
+  }
+  html[data-chamber="armed"] .arrival-figure.is-travelling{animation:chamberFigureArrive 620ms var(--ease-entrance) forwards}
+  @keyframes chamberFigureArrive{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+  .chamber__node-signal{left:52px;bottom:auto;top:calc(112px + 92px)}
+  .chamber__floor{bottom:auto;top:198px;right:auto;width:78%}
+  .chamber__horizon,.chamber__return,.chamber__seam{display:none}
+  .auth-form{gap:15px}
+  .auth-form__statement{font-size:12px}
+  .auth-providers__note{font-size:10.5px;line-height:1.5}
+}
+@media(max-width:420px){
+  .chamber__panel-dock{width:100%}
+  .auth-form{gap:17px}
+  .auth-field input{padding:12px 13px;font-size:16px}
+  .auth-form__heading{font-size:clamp(26px,7.4vw,32px)}
+  .auth-provider__state{display:none}
+  .auth-form__options{gap:11px}
+}
+@media(min-width:861px){
+  /* The chamber is a full-height room; only on a wide screen is there room for
+     the page to breathe below the form. */
+  .chamber-page__stage{padding-bottom:120px}
+}
+
+/* --- Reduced motion and un-armed chambers ----------------------------- */
+/* Belt and braces. The boot marker already declines to arm the sequence for
+   these visitors, and every animated element above is scoped to that marker,
+   so the finished chamber is what renders. These rules make that guarantee
+   explicit and independent of the marker having run. */
+@media(prefers-reduced-motion:reduce){
+  .chamber__plane,.chamber__formation{transform:none!important}
+  .auth-panel,.auth-panel [data-stagger],.auth-form>*{opacity:1!important;transform:none!important}
+  .auth-panel__signal{opacity:1!important;transform:none!important}
+  .arrival-figure{opacity:1!important}
+  .arrival-figure__leg,.arrival-figure__arm{animation:none!important;transform:none!important}
+  .arrival-figure__node-core{opacity:1!important}
+  .chamber__floor-line{opacity:.85!important}
+  .chamber__node-signal{opacity:1!important;transform:none!important}
+  .chamber__floor-pulse{display:none}
+  .auth-submit__pulse{animation:none!important;display:none}
+}
+@media(pointer:coarse){
+  /* No parallax on a touch device: the plane never moves, so nothing is spent
+     tracking a pointer that does not exist. */
+  .chamber__plane,.chamber__formation{transform:none!important}
+}
+
+/* --- Account entry in the existing header ---------------------------- */
+/* Deliberately the quietest element in the header bar. It is set in the same
+   9.5px uppercase as the divisions, separated by a single hairline, and it is
+   hidden on narrow screens where the menu panel carries it instead. So it
+   reads as a way in rather than as a call to action. */
+.header-access{
+  font-size:9.5px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#b6b4b5;
+  white-space:nowrap;
+  padding:12px 20px 12px 0;
+  margin-right:20px;
+  border-right:1px solid var(--line);
+  transition:color var(--motion-response);
+}
+.header-access:hover,.header-access[aria-current="page"]{color:var(--violet)}
+.mobile-panel__access{
+  display:flex;
+  align-items:center;
+  gap:24px;
+  margin-top:26px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  font-size:clamp(15px,4.4vw,19px);
+  letter-spacing:-.02em;
+  color:var(--text-dim);
+}
+.mobile-panel__access span:first-child{font-size:10px;letter-spacing:.1em;color:var(--violet);width:20px}
+.mobile-panel__access span:last-child{font-size:18px;margin-left:auto;color:var(--muted)}
+@media(max-width:760px){
+  .header-access{display:none}
+}
