@@ -57,7 +57,6 @@ export function FileClustersScene({
 
       // Draw field stars
       for (const star of layers.stars) {
-        const depth = star.layer === 'near' ? 1 : star.layer === 'mid' ? 0.5 : 0.18;
         const calm = 1 - assembly * 0.4;
         const x = star.x * width + star.driftX * t * width * 1000 * calm;
         const y = star.y * height + star.driftY * t * height * 1000 * calm;
@@ -82,7 +81,7 @@ export function FileClustersScene({
         const ty = cy + (tile.scatterY * (1 - localAssembly) + tile.offsetY * localAssembly) * Math.min(width, height) * 0.35;
 
         // Pointer influence
-        let dx = tx - px, dy = ty - py;
+        const dx = tx - px, dy = ty - py;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const influence = pointer.active ? Math.max(0, 1 - dist / 120) * 0.25 : 0;
         const fx = tx + (dx / (dist || 1)) * influence * 18;

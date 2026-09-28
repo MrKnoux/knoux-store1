@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ProductScene } from './ProductScene';
-import { visualProfileFor, resolveProductLogo } from '@/data/product-visuals';
+import { resolveProductLogo } from '@/data/product-visuals';
 import type { SoftwareProduct } from '@/data/software';
 
 interface ProductHeroProps {
@@ -11,7 +11,6 @@ interface ProductHeroProps {
 }
 
 export function ProductHero({ product, arrivalComplete }: ProductHeroProps) {
-  const profile = visualProfileFor(product.slug);
   const logoPath = resolveProductLogo(product.slug);
   const hasLiveUrl = Boolean(product.liveUrl);
 

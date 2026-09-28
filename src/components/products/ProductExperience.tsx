@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ProductArrival } from './ProductArrival';
 import { ProductHero } from './ProductHero';
 import { ProductSystemAnatomy } from './anatomy/ProductSystemAnatomy';

@@ -57,7 +57,6 @@ export function SystemNucleusScene({
 
       // Draw field stars
       for (const star of layers.stars) {
-        const depth = star.layer === 'near' ? 1 : star.layer === 'mid' ? 0.5 : 0.18;
         const calm = 1 - assembly * 0.5;
         const x = star.x * width + star.driftX * t * width * 1000 * calm;
         const y = star.y * height + star.driftY * t * height * 1000 * calm;
@@ -78,8 +77,6 @@ export function SystemNucleusScene({
         const localAssembly = Math.max(0, Math.min(1, (assembly - node.delay * 0.6) / 0.5));
         const eased = localAssembly * localAssembly * (3 - 2 * localAssembly);
 
-        const targetX = cx + node.offsetX * Math.min(width, height) * 0.35;
-        const targetY = cy + node.offsetY * Math.min(width, height) * 0.35;
         const scatterX = cx + (node.scatterX * (1 - eased) + node.offsetX * eased) * Math.min(width, height) * 0.35;
         const scatterY = cy + (node.scatterY * (1 - eased) + node.offsetY * eased) * Math.min(width, height) * 0.35;
 

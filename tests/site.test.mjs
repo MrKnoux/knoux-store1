@@ -208,7 +208,9 @@ test('division pages render their registry honestly', async () => {
   assert.ok(!/\$\d/.test(webText), 'web must not publish prices');
 
   const work = await (await fetch(origin + '/work')).text();
-  assert.match(work, /EMPTY BY EVIDENCE/i, 'the work archive must state that it is empty');
+  const workText = work.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  assert.match(workText, /CASE FILES \/ VERIFIED PRODUCTS/i, 'the work archive must identify verified product case files');
+  assert.match(workText, /repository evidence/i, 'the work archive must keep its evidence-first contract visible');
   assert.ok(!/<blockquote\b|"@type":"Review"/i.test(work), 'no testimonials may be shown');
 
   const creative = await (await fetch(origin + '/creative')).text();

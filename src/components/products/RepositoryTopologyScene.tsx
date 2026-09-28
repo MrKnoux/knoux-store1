@@ -57,7 +57,6 @@ export function RepositoryTopologyScene({
 
       // Draw field stars
       for (const star of layers.stars) {
-        const depth = star.layer === 'near' ? 1 : star.layer === 'mid' ? 0.5 : 0.18;
         const calm = 1 - assembly * 0.4;
         const x = star.x * width + star.driftX * t * width * 1000 * calm;
         const y = star.y * height + star.driftY * t * height * 1000 * calm;
@@ -95,7 +94,7 @@ export function RepositoryTopologyScene({
           // Pointer influence on edge midpoint
           const mx = (fx + tx) * 0.5;
           const my = (fy + ty) * 0.5;
-          let edx = mx - px, edy = my - py;
+          const edx = mx - px, edy = my - py;
           const edist = Math.sqrt(edx * edx + edy * edy);
           const einfluence = pointer.active ? Math.max(0, 1 - edist / 180) * 0.15 : 0;
           const ex = mx + (edx / (edist || 1)) * einfluence * 20;
@@ -119,7 +118,7 @@ export function RepositoryTopologyScene({
         const y = cy + (node.scatterY * (1 - localAssembly) + node.offsetY * localAssembly) * Math.min(width, height) * 0.4;
 
         // Pointer influence
-        let dx = x - px, dy = y - py;
+        const dx = x - px, dy = y - py;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const influence = pointer.active ? Math.max(0, 1 - dist / 180) * 0.4 : 0;
         const fx = x + (dx / (dist || 1)) * influence * 25;

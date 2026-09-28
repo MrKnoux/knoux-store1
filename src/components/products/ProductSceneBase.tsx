@@ -22,8 +22,6 @@ export function ProductSceneBase({
   className,
 }: ProductSceneBaseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const random = useRef(() => seeded(seed));
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -93,27 +91,18 @@ export function ProductSceneBase({
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [motif, seed, reduced, pointer.x, pointer.y, pointer.active]);
+  }, [motif, seed, reduced, pointer]);
 
   return <canvas className={className} ref={canvasRef} aria-hidden="true" />;
-}
-
-function seeded(seed: number) {
-  let state = (seed + 0x6d2b79f5) | 0;
-  return () => {
-    state = Math.imul(state ^ (state >>> 15), 1 | state);
-    state ^= state + Math.imul(state ^ (state >>> 7), 61 | state);
-    return ((state ^ (state >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 function drawScene(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  time: number,
-  dt: number,
-  pointer: { x: number; y: number; active: boolean }
+  _time: number,
+  _dt: number,
+  _pointer: { x: number; y: number; active: boolean }
 ) {
   // Base implementation - overridden by specific scenes
   ctx.fillStyle = '#08090a';

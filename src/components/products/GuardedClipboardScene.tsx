@@ -60,7 +60,6 @@ export function GuardedClipboardScene({
 
       // Draw field stars
       for (const star of layers.stars) {
-        const depth = star.layer === 'near' ? 1 : star.layer === 'mid' ? 0.5 : 0.18;
         const calm = 1 - assembly * 0.4;
         const x = star.x * width + star.driftX * t * width * 1000 * calm;
         const y = star.y * height + star.driftY * t * height * 1000 * calm;
@@ -122,7 +121,7 @@ export function GuardedClipboardScene({
           const passed = cardProgress > 0.7;
 
           // Pointer influence
-          let dx = cx_card - px, dy = cy_card - py;
+          const dx = cx_card - px, dy = cy_card - py;
           const dist = Math.sqrt(dx * dx + dy * dy);
           const influence = pointer.active ? Math.max(0, 1 - dist / 140) * 0.15 : 0;
           cx_card += (dx / (dist || 1)) * influence * 20;

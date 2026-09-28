@@ -7,15 +7,6 @@ import type { SoftwareProduct } from '@/data/software';
 const STAGE_DURATION = 900;
 const TOTAL_STAGES = 5;
 
-function seeded(seed: number) {
-  let state = (seed + 0x6d2b79f5) | 0;
-  return () => {
-    state = Math.imul(state ^ (state >>> 15), 1 | state);
-    state ^= state + Math.imul(state ^ (state >>> 7), 61 | state);
-    return ((state ^ (state >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 function slugToSeed(slug: string): number {
   let hash = 0x4b4e4f58;
   for (let i = 0; i < slug.length; i++) {
@@ -33,11 +24,9 @@ export function ProductArrival({ product, onComplete }: ProductArrivalProps) {
   const profile = visualProfileFor(product.slug);
   const logoPath = resolveProductLogo(product.slug);
   const seed = slugToSeed(product.slug);
-  const random = seeded(seed);
-
   const [stage, setStage] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [showContent, setShowContent] = useState(false);
+  const stageRef = useRef(0);
   const reducedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressAnimRef = useRef<number>(0);
@@ -54,19 +43,19 @@ export function ProductArrival({ product, onComplete }: ProductArrivalProps) {
 
   useEffect(() => {
     if (reducedRef.current) {
+      stageRef.current = TOTAL_STAGES;
       setStage(TOTAL_STAGES);
       setProgress(1);
-      setShowContent(true);
       onComplete();
       return;
     }
 
     const advanceStage = (nextStage: number) => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      stageRef.current = nextStage;
       setStage(nextStage);
       if (nextStage >= TOTAL_STAGES) {
         setProgress(1);
-        setShowContent(true);
         onComplete();
         return;
       }
@@ -75,10 +64,10 @@ export function ProductArrival({ product, onComplete }: ProductArrivalProps) {
     };
 
     const animateProgress = () => {
-      const target = stage / TOTAL_STAGES;
+      const target = stageRef.current / TOTAL_STAGES;
       progressAnimRef.current += (target - progressAnimRef.current) * 0.12;
       setProgress(progressAnimRef.current);
-      if (stage < TOTAL_STAGES || Math.abs(progressAnimRef.current - 1) > 0.001) {
+      if (stageRef.current < TOTAL_STAGES || Math.abs(progressAnimRef.current - 1) > 0.001) {
         rafRef.current = requestAnimationFrame(animateProgress);
       }
     };

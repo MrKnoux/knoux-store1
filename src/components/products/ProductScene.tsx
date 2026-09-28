@@ -8,7 +8,7 @@ import { FileClustersScene } from './FileClustersScene';
 import { CaptureTimelineScene } from './CaptureTimelineScene';
 import { MediaSpectrumScene } from './MediaSpectrumScene';
 import { GuardedClipboardScene } from './GuardedClipboardScene';
-import { visualProfileFor, resolveProductLogo } from '@/data/product-visuals';
+import { visualProfileFor } from '@/data/product-visuals';
 import type { SoftwareProduct } from '@/data/software';
 import type { ProductVisualMotif } from '@/data/product-visuals';
 
@@ -22,15 +22,15 @@ interface ProductSceneProps {
 export function ProductScene({ product, className, height = 400 }: ProductSceneProps) {
   const profile = visualProfileFor(product.slug);
   const motif = profile?.motif ?? 'system-nucleus';
-  const seedRef = useRef(slugToSeed(product.slug));
-  const [reduced, setReduced] = useState(false);
+  const seed = slugToSeed(product.slug);
+  const [reduced, setReduced] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   const [pointer, setPointer] = useState({ x: 0, y: 0, active: false });
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const fine = window.matchMedia('(pointer: fine)');
-    setReduced(media.matches);
     const onChange = () => setReduced(media.matches);
     media.addEventListener('change', onChange);
     return () => media.removeEventListener('change', onChange);
@@ -64,8 +64,6 @@ export function ProductScene({ product, className, height = 400 }: ProductSceneP
     };
   }, [reduced]);
 
-  const SceneComponent = getSceneComponent(motif);
-
   return (
     <div
       ref={canvasRef}
@@ -74,12 +72,7 @@ export function ProductScene({ product, className, height = 400 }: ProductSceneP
       aria-hidden="true"
       data-motif={motif}
     >
-      <SceneComponent
-        seed={seedRef.current}
-        reduced={reduced}
-        pointer={pointer}
-        className="product-scene__canvas"
-      />
+      {renderScene(motif, seed, reduced, pointer)}
     </div>
   );
 }
@@ -92,23 +85,28 @@ function slugToSeed(slug: string): number {
   return hash >>> 0;
 }
 
-function getSceneComponent(motif: ProductVisualMotif) {
+function renderScene(
+  motif: ProductVisualMotif,
+  seed: number,
+  reduced: boolean,
+  pointer: { x: number; y: number; active: boolean },
+) {
+  const props = { seed, reduced, pointer, className: 'product-scene__canvas' };
   switch (motif) {
-    case 'system-nucleus':
-      return SystemNucleusScene;
     case 'repository-topology':
-      return RepositoryTopologyScene;
+      return <RepositoryTopologyScene {...props} />;
     case 'diagnostic-rings':
-      return DiagnosticRingsScene;
+      return <DiagnosticRingsScene {...props} />;
     case 'file-clusters':
-      return FileClustersScene;
+      return <FileClustersScene {...props} />;
     case 'capture-timeline':
-      return CaptureTimelineScene;
+      return <CaptureTimelineScene {...props} />;
     case 'media-spectrum':
-      return MediaSpectrumScene;
+      return <MediaSpectrumScene {...props} />;
     case 'guarded-clipboard':
-      return GuardedClipboardScene;
+      return <GuardedClipboardScene {...props} />;
+    case 'system-nucleus':
     default:
-      return SystemNucleusScene;
+      return <SystemNucleusScene {...props} />;
   }
 }

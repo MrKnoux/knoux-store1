@@ -52,12 +52,8 @@ export function MediaSpectrumScene({
 
       const cx = width * 0.5;
       const cy = height * 0.5;
-      const px = pointer.active ? pointer.x : cx;
-      const py = pointer.active ? pointer.y : cy;
-
       // Draw field stars
       for (const star of layers.stars) {
-        const depth = star.layer === 'near' ? 1 : star.layer === 'mid' ? 0.5 : 0.18;
         const calm = 1 - assembly * 0.3;
         const x = star.x * width + star.driftX * t * width * 1000 * calm;
         const y = star.y * height + star.driftY * t * height * 1000 * calm;
