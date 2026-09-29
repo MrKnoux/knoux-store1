@@ -1,0 +1,2 @@
+import Link from 'next/link'; import { SignalManagement, SignalUnavailable } from '@/components/signal/SignalShell';
+export default function SignalClaimPage(){ return <SignalManagement path="/signal/claim" title="Verify this number."><div className="signal-claim"><p>Claiming is available only when your authenticated KNOuX account has a verified phone that matches the number under management.</p><SignalUnavailable noun="claim verification"/><Link className="action" href="/signal">Search a number <span>→</span></Link></div></SignalManagement>; }

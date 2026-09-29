@@ -43,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/engineering',
     '/about',
     '/contact',
+    '/signal', '/signal/lookup', '/signal/claim', '/signal/my-number', '/signal/my-number/activity', '/signal/my-number/labels', '/signal/my-number/reputation', '/signal/my-number/privacy', '/signal/watchlist', '/signal/business', '/signal/settings',
     // The account routes. They hold nothing confidential, so they are listed
     // like the rest of the site rather than hidden.
     '/login',

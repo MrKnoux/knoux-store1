@@ -128,6 +128,7 @@ export function breadcrumbFor(path: string): Breadcrumb[] {
     engineering: { label: 'Engineering', href: null },
     about: { label: 'About', href: null },
     contact: { label: 'Contact', href: null },
+    signal: { label: 'Signal', href: '/signal' },
   };
 
   if (first === 'products' && second) {
