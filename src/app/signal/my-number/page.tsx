@@ -1,0 +1,3 @@
+import Link from 'next/link'; import { SignalManagement, SignalUnavailable } from '@/components/signal/SignalShell';
+const routes=[['/signal/my-number/activity','Activity'],['/signal/my-number/labels','Labels'],['/signal/my-number/reputation','Reputation'],['/signal/my-number/privacy','Privacy']];
+export default function MyNumber(){return <SignalManagement path="/signal/my-number" title="My number."><SignalUnavailable noun="verified number profile"/><nav className="signal-management-links" aria-label="My number"><>{routes.map(([href,label])=><Link href={href} key={href}>{label}<span>→</span></Link>)}</></nav></SignalManagement>}
