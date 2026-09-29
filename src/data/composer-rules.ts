@@ -15,6 +15,7 @@ import { labEntities, softwareEntities } from '@/data/software';
  */
 
 export const routeEntities: DiscoverableEntity[] = [
+  { id: 'route-signal', kind: 'route', division: 'institution', code: 'SG', slug: 'signal', name: 'Signal', shortName: 'Signal', summary: 'Phone intelligence and evidence lookup.', status: 'active', route: '/signal', categories: ['institution'], searchTerms: ['signal', 'phone lookup', 'number search', 'phone intelligence'], capabilities: [], relatedIds: [] },
   { id: 'route-home', kind: 'route', division: 'institution', code: 'RT', slug: 'home', name: 'Headquarters', shortName: 'Home', summary: 'The KNOuX digital headquarters.', status: 'active', route: '/', categories: ['headquarters'], searchTerms: ['home', 'start', 'knoux', 'headquarters', 'main page'], capabilities: [], relatedIds: [] },
   { id: 'route-labs', kind: 'route', division: 'labs', code: 'RT', slug: 'labs', name: 'Labs', shortName: 'Labs', summary: 'Research, experiments and unfinished systems.', status: 'active', route: '/labs', categories: ['institution'], searchTerms: ['labs', 'research', 'experiments', 'prototype', 'wip'], capabilities: [], relatedIds: ['lab-quill', 'lab-crypt'] },
   { id: 'route-work', kind: 'route', division: 'institution', code: 'RT', slug: 'work', name: 'Work', shortName: 'Work', summary: 'Verified KNOuX product and engineering case files with repository evidence.', status: 'active', route: '/work', categories: ['institution'], searchTerms: ['work', 'case study', 'projects', 'portfolio', 'clients'], capabilities: [], relatedIds: [] },
