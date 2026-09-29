@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { SignalField } from '@/components/signal/SignalField';
 
 type SignalState = 'IDLE' | 'INPUT' | 'READY' | 'SUBMITTING' | 'SEARCHING' | 'NOT_FOUND' | 'ERROR';
 const PARTICLES = Array.from({ length: 120 }, (_, index) => ({
@@ -23,6 +24,7 @@ function statusCopy(state: SignalState) {
 export function SignalExperience({ lookup = false }: { lookup?: boolean }) {
   const [value, setValue] = useState('');
   const [state, setState] = useState<SignalState>('IDLE');
+  const [pulse, setPulse] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
   const valid = useMemo(() => /^\+?[\d\s().-]{7,}$/.test(value.trim()) && value.replace(/\D/g, '').length >= 7, [value]);
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -49,7 +51,7 @@ export function SignalExperience({ lookup = false }: { lookup?: boolean }) {
 
   return <section className={`signal-experience signal-state--${state.toLowerCase()}`} aria-labelledby="signal-title">
     <div className="signal-experience__meta"><span>KNOuX SIGNAL</span><span>{lookup ? 'LOOKUP INSTRUMENT' : 'PHONE INTELLIGENCE'}</span></div>
-    <div className="signal-field-visual" aria-hidden="true"><div className="signal-orbit signal-orbit--one"/><div className="signal-orbit signal-orbit--two"/>
+    <SignalField mode={state} pulse={pulse}/><div className="signal-field-visual" aria-hidden="true"><div className="signal-orbit signal-orbit--one"/><div className="signal-orbit signal-orbit--two"/>
       {PARTICLES.map((particle) => <i key={particle.id} className="signal-particle" style={{ '--x': `${particle.x}%`, '--y': `${particle.y}%`, '--s': particle.size, '--d': `${particle.delay}s` } as React.CSSProperties}/>)}</div>
     <div className="signal-instrument">
       <p className="label label--signal">{statusCopy(state)}</p>
@@ -57,7 +59,7 @@ export function SignalExperience({ lookup = false }: { lookup?: boolean }) {
       <form onSubmit={submit} className="signal-query" data-ready={valid}>
         <label htmlFor="signal-phone" className="sr-only">Phone number to resolve</label>
         <span aria-hidden="true">⌁</span>
-        <input id="signal-phone" dir="ltr" inputMode="tel" autoComplete="tel" value={value} onFocus={() => setState(value ? (valid ? 'READY' : 'INPUT') : 'INPUT')} onChange={(event) => { setValue(event.target.value); setState(event.target.value ? (/^\+?[\d\s().-]{7,}$/.test(event.target.value) && event.target.value.replace(/\D/g, '').length >= 7 ? 'READY' : 'INPUT') : 'IDLE'); }} placeholder="Search a phone number" disabled={state === 'SEARCHING'} />
+        <input id="signal-phone" dir="ltr" inputMode="tel" autoComplete="tel" value={value} onFocus={() => setState(value ? (valid ? 'READY' : 'INPUT') : 'INPUT')} onChange={(event) => { setValue(event.target.value); setPulse((current) => current + 1); setState(event.target.value ? (/^\+?[\d\s().-]{7,}$/.test(event.target.value) && event.target.value.replace(/\D/g, '').length >= 7 ? 'READY' : 'INPUT') : 'IDLE'); }} placeholder="Search a phone number" disabled={state === 'SEARCHING'} />
         {value ? <button className="signal-query__clear" type="button" onClick={reset} aria-label="Clear number">×</button> : null}
         <button type="submit" disabled={!valid || state === 'SEARCHING'} aria-label="Resolve number">{state === 'SEARCHING' ? '· · ·' : '→'}</button>
       </form>
